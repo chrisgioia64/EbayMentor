@@ -31,8 +31,34 @@ public class EbayHomePage extends PageObject {
     private final static String COUNT_DIV = ".srp-controls__count";
     private final static String SPAN_BOLD = ".BOLD";
 
+    // Problem 3
+    private final static String BANNER_DIV_ID = "#rtm_list1";
+
+    private final static String CAROUSEL_PLAYBACK = "button[class='carousel__playback']";
+    private final static String CAROUSEL_NEXT = "button.carousel__control--next";
+    private final static String CAROUSEL_LIST = ".carousel__list";
+    private final static String CAROUSEL_LIST_ITEMS = "li";
+
     public EbayHomePage(WebDriver driver) {
         super(driver);
+    }
+
+    public void clickCarouselNext() {
+        click(CAROUSEL_NEXT);
+    }
+
+    public void verifyCarouselListItems() {
+        WebElement carouselList = driver.findElement(By.cssSelector(CAROUSEL_LIST));
+        List<WebElement> items = carouselList.findElements(By.cssSelector(CAROUSEL_LIST_ITEMS));
+        int numVisible = 0;
+        for (WebElement item : items) {
+            String value = item.getAttribute("aria-hidden");
+            LOGGER.info("Carousel Item is hidden {}", value);
+            if (value == null) {
+                numVisible++;
+            }
+        }
+        assertEquals(1, numVisible);
     }
 
     public void clickShopByCategoryButton() {

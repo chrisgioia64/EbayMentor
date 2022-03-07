@@ -60,4 +60,25 @@ public class MainTest extends BaseTest {
         return result;
     }
 
+    @Test
+    public void test3() {
+        WebDriver driver = getWebDriver();
+        driver.get("https://www.ebay.com/");
+        EbayHomePage homePage = new EbayHomePage(driver);
+        for (int i = 0; i < 5; i++) {
+            homePage.clickCarouselNext();
+            LOGGER.info("Clicking next " + i);
+            sleepMs(1000);
+        }
+        homePage.verifyCarouselListItems();
+    }
+
+    public static void sleepMs(int ms) {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
