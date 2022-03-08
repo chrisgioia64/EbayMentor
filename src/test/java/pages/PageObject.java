@@ -61,6 +61,7 @@ public abstract class PageObject {
 
     protected boolean elementExists(String cssSelector) {
         try {
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(cssSelector)));
             driver.findElement(By.cssSelector(cssSelector));
             return true;
         } catch (NoSuchElementException ex) {

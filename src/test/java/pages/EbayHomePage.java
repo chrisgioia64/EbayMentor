@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
@@ -39,6 +40,14 @@ public class EbayHomePage extends PageObject {
     private final static String CAROUSEL_LIST = ".carousel__list";
     private final static String CAROUSEL_LIST_ITEMS = "li";
 
+    // Problem 4
+    private final static String CAROUSEL_CONTAINER = ".hl-standard-carousel__container";
+
+    // Problem 5
+    private final static String DAILY_DEALS_LINK = "#gh-p-1 a";
+    private final static String FEATURED_CARD = ".ebayui-dne-item-featured-card";
+    private final static String FEATURED_ITEM_TEXT = ".ebayui-dne-item-featured-card .col h3 span span";
+
     public EbayHomePage(WebDriver driver) {
         super(driver);
     }
@@ -47,6 +56,32 @@ public class EbayHomePage extends PageObject {
         click(CAROUSEL_NEXT);
     }
 
+    public void clickDailyDealsLink() {
+        click(DAILY_DEALS_LINK);
+    }
+
+    public List<String> getRecentViews() {
+        List<WebElement> elements = driver.findElements(By.cssSelector(CAROUSEL_CONTAINER));
+        LOGGER.info("There are {} elements", elements.size());
+        if (elements.size() >= 3) {
+            WebElement item = elements.get(2);
+            return null;
+        }
+        return null;
+    }
+
+    public List<String> getFeaturedItems() {
+        return driver.findElements(By.cssSelector(FEATURED_ITEM_TEXT))
+                .stream().map(x -> x.getText()).collect(Collectors.toList());
+    }
+
+    public boolean isFeaturedCardExists() {
+        return elementExists(FEATURED_CARD);
+    }
+
+    /**
+     * Verify that out of all carousel items, only one is not hidden
+     */
     public void verifyCarouselListItems() {
         WebElement carouselList = driver.findElement(By.cssSelector(CAROUSEL_LIST));
         List<WebElement> items = carouselList.findElements(By.cssSelector(CAROUSEL_LIST_ITEMS));

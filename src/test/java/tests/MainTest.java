@@ -3,6 +3,7 @@ package tests;
 import base.BaseTest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -23,7 +24,6 @@ public class MainTest extends BaseTest {
     @Test
     public void test1() {
         WebDriver driver = BaseTest.getWebDriver();
-        driver.get("https://www.ebay.com/");
         EbayHomePage homePage = new EbayHomePage(driver);
         homePage.clickShopByCategoryButton();
         Map<String, List<String>> categoryMap = homePage.getCategoryMap();
@@ -39,7 +39,6 @@ public class MainTest extends BaseTest {
     @Test(dataProvider = "searchQuery")
     public void test2(String searchQuery) {
         WebDriver driver = getWebDriver();
-        driver.get("https://www.ebay.com/");
         EbayHomePage homePage = new EbayHomePage(driver);
         homePage.searchQuery(searchQuery);
         int searchResults = homePage.getNumberResults();
@@ -60,17 +59,39 @@ public class MainTest extends BaseTest {
         return result;
     }
 
+
+    /** Verify that exactly one of the carousel items is visible. */
     @Test
     public void test3() {
         WebDriver driver = getWebDriver();
-        driver.get("https://www.ebay.com/");
         EbayHomePage homePage = new EbayHomePage(driver);
         for (int i = 0; i < 5; i++) {
             homePage.clickCarouselNext();
-            LOGGER.info("Clicking next " + i);
             sleepMs(1000);
         }
         homePage.verifyCarouselListItems();
+    }
+
+    @Test
+    public void test4() {
+        WebDriver driver = getWebDriver();
+        EbayHomePage homePage = new EbayHomePage(driver);
+        homePage.getRecentViews();
+        for (int i = 0; i < 5; i++) {
+            JavascriptExecutor js = (JavascriptExecutor) driver;
+            js.executeScript("window.scrollBy(0,400)", "");
+            homePage.getRecentViews();
+        }
+    }
+
+    @Test
+    public void test5() {
+        WebDriver driver = getWebDriver();
+        EbayHomePage homePage = new EbayHomePage(driver);
+        homePage.clickDailyDealsLink();
+        assertTrue(homePage.isFeaturedCardExists());
+        LOGGER.info("The featured items are: ");
+        homePage.getFeaturedItems().forEach(x -> LOGGER.info(x));
     }
 
     public static void sleepMs(int ms) {

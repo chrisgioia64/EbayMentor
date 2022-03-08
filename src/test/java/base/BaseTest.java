@@ -18,6 +18,7 @@ public class BaseTest {
     public static WebDriver getWebDriver() {
         BrowserType type = BrowserType.CHROME;
         WebDriver driver = DriverFactory.getInstance().getWebdriver(type);
+        driver.get("https://www.ebay.com/");
         driverPool.add(driver);
         return driver;
     }
