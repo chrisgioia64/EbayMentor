@@ -11,14 +11,17 @@ public class BaseTest {
 
     private final static List<WebDriver> driverPool = new ArrayList<>();
 
+    private static String URL = "";
+
     @BeforeSuite
     public void setup() {
+        URL = EnvironmentProperties.getInstance().getUrl();
     }
 
     public static WebDriver getWebDriver() {
         BrowserType type = BrowserType.CHROME;
         WebDriver driver = DriverFactory.getInstance().getWebdriver(type);
-        driver.get("https://www.ebay.com/");
+        driver.get(URL);
         driverPool.add(driver);
         return driver;
     }
