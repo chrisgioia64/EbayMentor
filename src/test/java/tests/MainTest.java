@@ -16,6 +16,9 @@ import java.util.Map;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
+/**
+ * Tests assigned by Usha
+ */
 public class MainTest extends BaseTest {
 
     private final static Logger LOGGER = LogManager.getLogger(MainTest.class);

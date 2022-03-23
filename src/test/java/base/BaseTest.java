@@ -15,11 +15,13 @@ public class BaseTest {
 
     @BeforeSuite
     public void setup() {
-        URL = EnvironmentProperties.getInstance().getUrl();
+        URL = EnvironmentProperties.getInstance().getLocaleProperties().getProperty(
+                LocaleProperties.KEY_URL
+        );
     }
 
     public static WebDriver getWebDriver() {
-        BrowserType type = BrowserType.CHROME;
+        BrowserType type = EnvironmentProperties.getInstance().getBrowser();
         WebDriver driver = DriverFactory.getInstance().getWebdriver(type);
         driver.get(URL);
         driverPool.add(driver);
