@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
@@ -50,6 +51,14 @@ public class DriverFactory {
     }
 
     private WebDriver createWebdriver(BrowserType type) {
+        boolean useExistingBrowser = EnvironmentProperties.getInstance().isUseExistingBrowser();
+        if (useExistingBrowser) {
+            int port = EnvironmentProperties.getInstance().getBrowserPort();
+            ChromeOptions options = new ChromeOptions();
+            options.setExperimentalOption("debuggerAddress", "127.0.0.1:" + port);
+            WebDriver driver = new ChromeDriver(options);
+            return driver;
+        }
         return switch (type) {
             case FIREFOX -> new FirefoxDriver();
             case CHROME -> new ChromeDriver();

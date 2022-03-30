@@ -20,6 +20,8 @@ public class EnvironmentProperties {
     // Environment Property Keys
     private static final String KEY_BROWSER = "browser";
     private static final String KEY_LOCALE = "locale";
+    private static final String KEY_USE_EXISTING_BROWSER = "use_existing_browser";
+    private static final String KEY_BROWSER_PORT = "port";
 
     private LocaleProperties localeProperties;
 
@@ -129,6 +131,47 @@ public class EnvironmentProperties {
         // Using the default value
         LOGGER.warn("Using default value for key {} of {}", key, defaultValue);
         return defaultValue;
+    }
+
+
+    private boolean getBooleanFlag(String key) {
+        String flag = getProperty(key);
+        if (flag == null) {
+            LOGGER.warn("No {} flag specified. Defaulting to false", key);
+            return false;
+        }
+        if (flag.equalsIgnoreCase("true")) {
+            LOGGER.info("{} flag set to true", key);
+            return true;
+        } else if (flag.equalsIgnoreCase("false")) {
+            LOGGER.info("{} flag set to false", key);
+            return false;
+        } else {
+            LOGGER.warn("{} flag must be true or false. Defaulting to false",
+                    key);
+            return false;
+        }
+    }
+
+
+    public boolean isUseExistingBrowser() {
+        return getBooleanFlag(KEY_USE_EXISTING_BROWSER);
+    }
+
+    public int getBrowserPort() {
+        String numProducts = getProperty(KEY_BROWSER_PORT);
+        if (numProducts == null) {
+            LOGGER.error("There is no port property specified");
+            return 0;
+        }
+        try {
+            int result = Integer.parseInt(numProducts);
+            LOGGER.info("The port property is set to " + result);
+            return result;
+        } catch (NumberFormatException e) {
+            LOGGER.error("The port property is not an integer");
+        }
+        return 0;
     }
 
 }

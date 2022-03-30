@@ -10,6 +10,10 @@ import static org.testng.AssertJUnit.assertEquals;
 
 public class SmokeTest extends BaseTest {
 
+    /**
+     * Tests that the title of the home page for the given locale
+     * matches what has been defined in the locale file
+     */
     @Test
     public void testTitle() {
         WebDriver driver = getWebDriver();
