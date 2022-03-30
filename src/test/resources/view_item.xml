@@ -3,7 +3,7 @@
 <suite name="Suite"  data-provider-thread-count="1">
     <test name="Test">
         <classes>
-            <class name="tests.SmokeTest" />
+            <class name="tests.view_item.WatchlistTest" />
         </classes>
     </test> <!-- Test -->
 </suite> <!-- Suite -->

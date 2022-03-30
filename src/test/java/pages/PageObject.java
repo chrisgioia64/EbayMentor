@@ -1,5 +1,7 @@
 package pages;
 
+import base.EnvironmentProperties;
+import base.LocaleProperties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
@@ -11,6 +13,7 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.List;
 
 /**
  * This is the base page object classes from which all page objects extend
@@ -61,7 +64,7 @@ public abstract class PageObject {
 
     protected boolean elementExists(String cssSelector) {
         try {
-            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(cssSelector)));
+//            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(cssSelector)));
             driver.findElement(By.cssSelector(cssSelector));
             return true;
         } catch (NoSuchElementException ex) {
@@ -76,6 +79,51 @@ public abstract class PageObject {
         } catch (NoSuchElementException ex) {
             return false;
         }
+    }
+
+    protected String getText(String cssSelector) {
+        WebElement element = driver.findElement(By.cssSelector(cssSelector));
+        return element.getText();
+    }
+
+    protected String getText(String cssSelector, String defaultText) {
+        try {
+            WebElement element = driver.findElement(By.cssSelector(cssSelector));
+            return element.getText();
+        } catch (NoSuchElementException ex) {
+            return defaultText;
+        }
+    }
+
+    public WebElement getFirstAvailableElement(List<String> cssSelectors) {
+        for (String cssSelector : cssSelectors) {
+            if (elementExists(cssSelector)) {
+                return driver.findElement(By.cssSelector(cssSelector));
+            }
+        }
+        LOGGER.warn("Could not find an available element out of CSS selectors {}", cssSelectors);
+        return null;
+    }
+
+    /** Navigates to the url of the given page.
+     *  Throws an exception when additional information (e.g. product ID) is needed
+     */
+    public abstract void navigateToPage();
+
+    private String getFullUrl(String subUrl) {
+        String URL = EnvironmentProperties.getInstance().getLocaleProperties().getProperty(
+                LocaleProperties.KEY_URL
+        );
+        return URL + "/" + subUrl;
+    }
+
+    /**
+     * Navigate the webdriver to the suburl given
+     * @param subUrl the portion of the url that comes after the domain name
+     */
+    protected void navigateToSuburl(String subUrl) {
+        String fullUrl = getFullUrl(subUrl);
+        driver.get(fullUrl);
     }
 
 }

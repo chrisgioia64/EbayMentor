@@ -16,7 +16,9 @@ import java.util.stream.Collectors;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
-public class EbayHomePage extends PageObject {
+public class EbayHomePage extends EbayPage {
+
+    public static final String URL = "";
 
     private final static Logger LOGGER = LogManager.getLogger(EbayHomePage.class);
 
@@ -51,6 +53,12 @@ public class EbayHomePage extends PageObject {
     public EbayHomePage(WebDriver driver) {
         super(driver);
     }
+
+    @Override
+    public void navigateToPage() {
+        navigateToSuburl(URL);
+    }
+
 
     public void clickCarouselNext() {
         click(CAROUSEL_NEXT);
