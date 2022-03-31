@@ -106,6 +106,10 @@ public static final String SELECTOR_WATCHING = "#vi-atl-lnk-99";
         return getText(SELECTOR_WATCHING);
     }
 
+    public WebElement getWatchButton() {
+        return getElement(SELECTOR_WATCHING);
+    }
+
     public void clickWatchButton() {
         click(SELECTOR_WATCHING);
     }

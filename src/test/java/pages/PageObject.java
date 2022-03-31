@@ -52,6 +52,12 @@ public abstract class PageObject {
         element.sendKeys(input);
     }
 
+    protected WebElement getElement(String cssSelector) {
+        WebElement element = wait.until(ExpectedConditions.visibilityOf(
+                driver.findElement(By.cssSelector(cssSelector))));
+        return element;
+    }
+
     /**
      * Click on the element with the given CSS Selector
      */

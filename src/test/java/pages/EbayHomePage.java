@@ -50,6 +50,9 @@ public class EbayHomePage extends EbayPage {
     private final static String FEATURED_CARD = ".ebayui-dne-item-featured-card";
     private final static String FEATURED_ITEM_TEXT = ".ebayui-dne-item-featured-card .col h3 span span";
 
+
+    private final static String LINK_TEXT_ELECTRONICS = "Electronics";
+
     public EbayHomePage(WebDriver driver) {
         super(driver);
     }
@@ -165,7 +168,15 @@ public class EbayHomePage extends EbayPage {
         click(SEARCH_BUTTON);
     }
 
-
+    public WebElement getElectronicsLink() {
+        List<WebElement> elements = driver.findElements(By.linkText(LINK_TEXT_ELECTRONICS));
+        if (elements.size() != 1) {
+            LOGGER.warn("Found {} electronics link", elements.size());
+            return null;
+        }
+        LOGGER.info("Using electronics link with text {}", elements.get(0).getText());
+        return elements.get(0);
+    }
 
 
 }
