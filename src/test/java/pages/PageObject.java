@@ -14,6 +14,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * This is the base page object classes from which all page objects extend
@@ -101,6 +103,11 @@ public abstract class PageObject {
         }
     }
 
+    /**
+     * Returns the first web element that exist from the list of selectors
+     * @param cssSelectors
+     * @return
+     */
     public WebElement getFirstAvailableElement(List<String> cssSelectors) {
         for (String cssSelector : cssSelectors) {
             if (elementExists(cssSelector)) {
@@ -109,6 +116,18 @@ public abstract class PageObject {
         }
         LOGGER.warn("Could not find an available element out of CSS selectors {}", cssSelectors);
         return null;
+    }
+
+    /**
+     * Use case is for a list of products that have their own container, where each
+     * container has more specific information like links, controls, etc.
+     * When we want to obtain a stream of the inner elements (e.g. link elements of all products)
+     * @param outerSelector
+     * @param innerSelector
+     */
+    protected Stream<WebElement> getInnerElements(By outerSelector, By innerSelector) {
+        return driver.findElements(outerSelector).stream().
+                map(x -> x.findElement(innerSelector));
     }
 
     /** Navigates to the url of the given page.

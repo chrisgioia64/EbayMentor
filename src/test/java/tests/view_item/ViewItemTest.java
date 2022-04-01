@@ -7,9 +7,11 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.Test;
 import pages.ViewItemPage;
+import pages.WatchlistPage;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.sql.Driver;
 import java.util.Properties;
 
 import static org.testng.AssertJUnit.assertEquals;
@@ -52,6 +54,17 @@ public class ViewItemTest extends BaseTest {
         LOGGER.info("------");
         LOGGER.info(viPage.getProductRatingsText());
         LOGGER.info(viPage.getRatingsPanelProductRatingText());
+    }
+
+    @Test
+    public void testWatchlistPage() {
+        WebDriver driver = getWebDriver();
+        WatchlistPage watchlistPage = new WatchlistPage(driver);
+        watchlistPage.navigateToPage();
+
+        String itemNumber = "303835193497";
+        boolean deleted = watchlistPage.deleteProduct(itemNumber);
+        LOGGER.info("Deleted product {} --- {}", itemNumber, deleted);
     }
 
     private final static String TEST_ITEMS_PROPERTY_FILE

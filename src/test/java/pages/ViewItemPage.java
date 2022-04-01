@@ -133,8 +133,12 @@ public static final String SELECTOR_WATCHING = "#vi-atl-lnk-99";
     }
 
     public boolean isWatchlistLinkVisible() {
-        WebElement element = driver.findElement(By.cssSelector(SELECTOR_ADD_TO_WATCHLIST_LINK));
+        WebElement element = getWatchlistLink();
         return element.isDisplayed() && element.isEnabled();
+    }
+
+    public WebElement getWatchlistLink() {
+        return driver.findElement(By.cssSelector(SELECTOR_ADD_TO_WATCHLIST_LINK));
     }
 
     public String getSaveSellerLinkText() {
