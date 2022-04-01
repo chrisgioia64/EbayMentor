@@ -23,7 +23,7 @@ public class ViewItemTest extends BaseTest {
     // keys for the test items in the test items file
     public static final String DATA_PROVIDER_WATCHLIST_1 = "watchlist_1";
     public static final String DATA_PROVIDER_VIEW_ITEM = "set_quantity";
-
+    public static final String DATA_PROVIDER_SAVE_SELLER = "save_seller";
 
     public static ViewItemPage navigateToPage(WebDriver driver, String item) {
         ViewItemPage itemPage = new ViewItemPage(driver);

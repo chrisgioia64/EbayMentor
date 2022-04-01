@@ -28,11 +28,13 @@ public class ViewItemPage extends EbayPage {
     public static final String SELECTOR_BUY_IT_NOW = "#binBtn_btn";
     public static final String SELECTOR_VIEW_IN_CART = "#vi-viewInCartBtn";
     public static final String SELECTOR_ADD_CART = "#atcRedesignId_btn";
-//    public static final String SELECTOR_WATCHING = "#vi-atl-lnk-99 .vi-atw-txt";
-public static final String SELECTOR_WATCHING = "#vi-atl-lnk-99";
-
+    //    public static final String SELECTOR_WATCHING = "#vi-atl-lnk-99 .vi-atw-txt";
+    public static final String SELECTOR_WATCHING = "#vi-atl-lnk-99";
 
     public static final String SELECTOR_NUM_WATCHERS = "#why2buy .w2b-cnt:nth-child(3)";
+
+    // Seller Information
+    public static final String SELECTOR_SELLER_LINK = ".ux-seller-section__item:nth-child(1) a";
     public static final String SELECTOR_SAVE_SELLER_LINK
             = "div[data-testid='x-about-this-seller'] .follow-ebay-wrapper button .follow-ebay_text";
     public static final String SELECTOR_CONTACT_SELLER_LINK
@@ -157,6 +159,10 @@ public static final String SELECTOR_WATCHING = "#vi-atl-lnk-99";
         return getText(SELECTOR_SAVE_SELLER_LINK);
     }
 
+    public void clickSaveSellerLink() {
+        click(SELECTOR_SAVE_SELLER_LINK);
+    }
+
     public String getContactSellerLinkText() {
         return getText(SELECTOR_CONTACT_SELLER_LINK);
     }
@@ -184,6 +190,10 @@ public static final String SELECTOR_WATCHING = "#vi-atl-lnk-99";
 
     public void navigateItemNumber(String itemNumber) {
         navigateToSuburl("itm/" + itemNumber);
+    }
+
+    public void clickSellerLink() {
+        click(SELECTOR_SELLER_LINK);
     }
 
     @Override
