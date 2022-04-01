@@ -8,6 +8,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.testng.ITest;
 import org.testng.SkipException;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Factory;
@@ -20,9 +21,8 @@ import java.sql.Driver;
 
 import static base.BaseTest.getWebDriver;
 
-public class WatchlistTest extends BaseTest {
+public class WatchlistTest extends BaseTest implements ITest {
 
-    public static final String DATA_PROVIDER_WATCHLIST_1 = "watchlist_1";
     private WatchlistTestTemplate template;
     private final static Logger LOGGER = LogManager.getLogger(WatchlistTest.class);
 
@@ -51,7 +51,7 @@ public class WatchlistTest extends BaseTest {
      *    visibility toggle on/off
      * - the number of watchers is updated
      */
-    @Test(dataProvider = DATA_PROVIDER_WATCHLIST_1)
+    @Test(dataProvider = ViewItemTest.DATA_PROVIDER_WATCHLIST_1)
     public void testWatchlist1(String itemId) {
         WebDriver driver = getWebDriver();
         ViewItemPage viPage = ViewItemTest.navigateToPage(driver, itemId);
@@ -93,9 +93,13 @@ public class WatchlistTest extends BaseTest {
         softAssert.assertAll();
     }
 
-    @DataProvider(name=DATA_PROVIDER_WATCHLIST_1)
+    @DataProvider(name=ViewItemTest.DATA_PROVIDER_WATCHLIST_1)
     public Object[][] getData1() {
-        return ViewItemTest.getItems(DATA_PROVIDER_WATCHLIST_1);
+        return ViewItemTest.getItems(ViewItemTest.DATA_PROVIDER_WATCHLIST_1);
     }
 
+    @Override
+    public String getTestName() {
+        return "WatchlistTest " + template.getClass().getName();
+    }
 }

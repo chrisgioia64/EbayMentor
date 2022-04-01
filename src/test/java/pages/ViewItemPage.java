@@ -22,6 +22,7 @@ public class ViewItemPage extends EbayPage {
     public static final String SELECTOR_BRAND = "div[data-testid='d-item-condition'] .d-item-condition-value span.clipped";
     public static final String SELECTOR_QUANTITY_INPUT = "#qtyTextBox";
     public static final String SELECTOR_NUM_AVAILABLE = "#qtySubTxt";
+    public static final String SELECTOR_QUANTITY_ERROR_BOX = "#qtyErrMsg div";
     public static final String SELECTOR_PRICE_TEXT = "#prcIsum";
 
     public static final String SELECTOR_BUY_IT_NOW = "#binBtn_btn";
@@ -54,8 +55,16 @@ public static final String SELECTOR_WATCHING = "#vi-atl-lnk-99";
     }
 
     public String getQuantityString() {
-        WebElement element = driver.findElement(By.cssSelector(SELECTOR_QUANTITY_INPUT));
+        WebElement element = getQuantityTextbox();
         return element.getAttribute("value");
+    }
+
+    public WebElement getQuantityTextbox() {
+        return driver.findElement(By.cssSelector(SELECTOR_QUANTITY_INPUT));
+    }
+
+    public WebElement getQuantityErrorBox() {
+        return driver.findElement(By.cssSelector(SELECTOR_QUANTITY_ERROR_BOX));
     }
 
     private String getNumberAvailableText() {
@@ -64,12 +73,15 @@ public static final String SELECTOR_WATCHING = "#vi-atl-lnk-99";
 
     public int getNumberAvailable() {
         String text = getNumberAvailableText();
+        if (text.equalsIgnoreCase("Last one")) {
+            return 1;
+        }
         String[] ary = text.split("\\s+");
         try {
             return Integer.parseInt(ary[0]);
         } catch (NumberFormatException e) {
             LOGGER.warn("Could not parse the number of available from text {}", text);
-            return 0;
+            return -1;
         }
     }
 

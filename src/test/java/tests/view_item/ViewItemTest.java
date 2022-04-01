@@ -20,6 +20,11 @@ public class ViewItemTest extends BaseTest {
 
     private final static Logger LOGGER = LogManager.getLogger(ViewItemTest.class);
 
+    // keys for the test items in the test items file
+    public static final String DATA_PROVIDER_WATCHLIST_1 = "watchlist_1";
+    public static final String DATA_PROVIDER_VIEW_ITEM = "set_quantity";
+
+
     public static ViewItemPage navigateToPage(WebDriver driver, String item) {
         ViewItemPage itemPage = new ViewItemPage(driver);
         itemPage.navigateItemNumber(item);
