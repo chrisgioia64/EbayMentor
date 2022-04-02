@@ -64,10 +64,23 @@ public abstract class PageObject {
      * Click on the element with the given CSS Selector
      */
     protected void click(String cssSelector) {
-        // explicit wait
+        click(By.cssSelector(cssSelector));
+    }
+
+    protected void click(By selector) {
         WebElement element = wait.until(ExpectedConditions.elementToBeClickable(
-                driver.findElement(By.cssSelector(cssSelector))));
+                driver.findElement(selector)));
         element.click();
+    }
+
+    protected boolean elementExists(WebElement element, By cssSelector) {
+        try {
+//            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(cssSelector)));
+            element.findElement(cssSelector);
+            return true;
+        } catch (NoSuchElementException ex) {
+            return false;
+        }
     }
 
     protected boolean elementExists(String cssSelector) {

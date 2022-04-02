@@ -3,14 +3,10 @@
 <suite name="Suite"  data-provider-thread-count="1">
     <test name="Test">
         <classes>
-<!--            <class name="tests.view_item.WatchlistTest" />-->
-<!--            <class name="tests.view_item.SetQuantityTest" />-->
+            <class name="tests.view_item.WatchlistTest" />
+            <class name="tests.view_item.SetQuantityTest" />
             <class name="tests.view_item.SaveSellerTest" />
-<!--            <class name="tests.view_item.ViewItemTest">-->
-<!--                <methods>-->
-<!--                    <include name="testWatchlistPage" />-->
-<!--                </methods>-->
-<!--            </class>-->
+            <class name="tests.view_item.AddToCartTest" />
         </classes>
     </test> <!-- Test -->
 </suite> <!-- Suite -->

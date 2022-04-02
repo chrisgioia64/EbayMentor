@@ -6,12 +6,15 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.Test;
+import pages.CartPage;
 import pages.ViewItemPage;
 import pages.WatchlistPage;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Driver;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 import static org.testng.AssertJUnit.assertEquals;
@@ -24,6 +27,7 @@ public class ViewItemTest extends BaseTest {
     public static final String DATA_PROVIDER_WATCHLIST_1 = "watchlist_1";
     public static final String DATA_PROVIDER_VIEW_ITEM = "set_quantity";
     public static final String DATA_PROVIDER_SAVE_SELLER = "save_seller";
+    public static final String DATA_PROVIDER_ADD_TO_CART = "add_to_cart";
 
     public static ViewItemPage navigateToPage(WebDriver driver, String item) {
         ViewItemPage itemPage = new ViewItemPage(driver);
@@ -70,6 +74,19 @@ public class ViewItemTest extends BaseTest {
         String itemNumber = "303835193497";
         boolean deleted = watchlistPage.deleteProduct(itemNumber);
         LOGGER.info("Deleted product {} --- {}", itemNumber, deleted);
+    }
+
+    @Test
+    public void testCartPage() {
+        WebDriver driver = getWebDriver();
+        CartPage cartPage = new CartPage(driver);
+        driver.get("https://cart.ebay.com");
+
+        List<String> items = Arrays.asList("353384596361", "232406019645", "303835193497");
+        for (String item : items) {
+            LOGGER.info(item + " : " + cartPage.getQuantity(item));
+        }
+
     }
 
     private final static String TEST_ITEMS_PROPERTY_FILE

@@ -44,6 +44,9 @@ public class ViewItemPage extends EbayPage {
 
     public static final String SELECTOR_RATING_PANEL_PRODUCT_RATINGS_TEXT = "#rwid .ebay-reviews-count";
 
+    private final static By SELECTOR_INSIDE_POPUP_ADD_TO_CART_LINK
+            = By.cssSelector(".app-atc-layer-redesign-content-wrapper .btn-scnd:nth-child(2)");
+
     public ViewItemPage(WebDriver driver) {
         super(driver);
     }
@@ -144,6 +147,10 @@ public class ViewItemPage extends EbayPage {
             LOGGER.warn("Could not parse the number {}", ary[0]);
             return 0;
         }
+    }
+
+    public void clickAddToCartInsidePopup() {
+        click(SELECTOR_INSIDE_POPUP_ADD_TO_CART_LINK);
     }
 
     public boolean isWatchlistLinkVisible() {
