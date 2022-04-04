@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+
 <suite name="Suite"  data-provider-thread-count="1">
+    <listeners>
+        <listener class-name="reports.ExtentTestListener"></listener>
+    </listeners>
+
     <test name="Test">
         <classes>
             <class name="base.BaseTest">
             </class>
             <class name="tests.view_item.ViewItemTest">
-<!--                <methods>-->
+                <methods>
 <!--                    <include name="testWatchlist" />-->
 <!--                    <include name="testSaveSeller" />-->
 <!--                    <include name="testAddToCart" />-->
 <!--                    <include name="testSetQuantity" />-->
-<!--                </methods>-->
+                    <include name="testProductDetails" />
+                </methods>
             </class>
         </classes>
     </test> <!-- Test -->

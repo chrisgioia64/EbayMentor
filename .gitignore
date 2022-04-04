@@ -17,3 +17,5 @@ target/
 
 # Node
 js/node_modules/
+
+TestReport/*
