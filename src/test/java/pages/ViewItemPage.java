@@ -11,8 +11,6 @@ import java.util.Arrays;
 
 public class ViewItemPage extends EbayPage {
 
-    private final static String URL = "";
-
     private final static Logger LOGGER = LogManager.getLogger(ViewItemPage.class);
 
     // Selectors

@@ -26,7 +26,7 @@ public class MainTest extends BaseTest {
     /** Search by category. */
     @Test
     public void test1() {
-        WebDriver driver = BaseTest.getWebDriver();
+        WebDriver driver = getWebDriver();
         EbayHomePage homePage = new EbayHomePage(driver);
         homePage.clickShopByCategoryButton();
         Map<String, List<String>> categoryMap = homePage.getCategoryMap();

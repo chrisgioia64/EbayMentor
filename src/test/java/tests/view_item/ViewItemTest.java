@@ -1,12 +1,17 @@
 package tests.view_item;
 
+import api.CustomUtilities;
 import base.BaseTest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.testng.annotations.Test;
+import org.testng.SkipException;
+import org.testng.annotations.*;
+import org.testng.asserts.SoftAssert;
 import pages.CartPage;
+import pages.SellerPage;
 import pages.ViewItemPage;
 import pages.WatchlistPage;
 
@@ -17,18 +22,39 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.*;
+import static org.testng.AssertJUnit.assertTrue;
 
 public class ViewItemTest extends BaseTest {
 
     private final static Logger LOGGER = LogManager.getLogger(ViewItemTest.class);
 
-    // keys for the test items in the test items file
-    public static final String DATA_PROVIDER_WATCHLIST_1 = "watchlist_1";
-    public static final String DATA_PROVIDER_VIEW_ITEM = "set_quantity";
-    public static final String DATA_PROVIDER_SAVE_SELLER = "save_seller";
-    public static final String DATA_PROVIDER_ADD_TO_CART = "add_to_cart";
+    private WebDriver driver;
+    private ViewItemPage viewItemPage;
+    private WatchlistPage watchlistPage;
+    private SellerPage sellerPage;
+    private CartPage cartPage;
 
+    private String itemId;
+    private final static String KEY_ITEM = "items";
+
+    @Factory(dataProvider = KEY_ITEM)
+    public ViewItemTest(String itemId) {
+        this.itemId = itemId;
+    }
+
+    @BeforeMethod
+    public void setup() {
+        driver = getWebDriver();
+        viewItemPage = ViewItemTest.navigateToPage(driver, itemId);
+        watchlistPage = new WatchlistPage(driver);
+        sellerPage = new SellerPage(driver);
+        cartPage = new CartPage(driver);
+    }
+
+    /**
+     * Navogates to the View Item page for product with item number ITEM
+     */
     public static ViewItemPage navigateToPage(WebDriver driver, String item) {
         ViewItemPage itemPage = new ViewItemPage(driver);
         itemPage.navigateItemNumber(item);
@@ -36,58 +62,183 @@ public class ViewItemTest extends BaseTest {
         return itemPage;
     }
 
-    @Test
-    public void testTitle() {
-        WebDriver driver = getWebDriver();
-        ViewItemPage viPage = new ViewItemPage(driver);
-        viPage.navigateItemNumber("303835193497");
-//        viPage.navigateItemNumber("192238685975");
 
-        LOGGER.info(viPage.getProductTitle());
-        LOGGER.info(viPage.getBrandText());
-        LOGGER.info(viPage.getQuantityString());
-        LOGGER.info(viPage.getNumberAvailable());
-        LOGGER.info(viPage.getPriceAsDouble());
+    /**
+     * Check correct behavior by performing adding/removing of item from watchlist
+     * via a custom operation (e.g. clicking watchlist button, clicking watchlist link)
+     * that is specified by {@link WatchlistTestTemplate}
+     *
+     * Performs the following checks:
+     * - does the button text change to the appropriate text
+     * - does the watchlist link at the upper right of the portion have its
+     *    visibility toggle on/off
+     * - the number of watchers is updated
+     */
+    @Test(dataProvider = "templates")
+    public void testWatchlist(WatchlistTestTemplate template) {
+        ViewItemPage viPage = ViewItemTest.navigateToPage(driver, itemId);
 
-        LOGGER.info("------");
-        LOGGER.info(viPage.getBuyItNowText());
-        WebElement element = viPage.getCartButton();
-        LOGGER.info(element.getText());
-        LOGGER.info(viPage.getWatchingText());
-
-        LOGGER.info("------");
-        LOGGER.info(viPage.getNumWatchers());
-        LOGGER.info(viPage.isWatchlistLinkVisible());
-        LOGGER.info(viPage.getSaveSellerLinkText());
-        LOGGER.info(viPage.getContactSellerLinkText());
-        LOGGER.info("------");
-        LOGGER.info(viPage.getProductRatingsText());
-        LOGGER.info(viPage.getRatingsPanelProductRatingText());
-    }
-
-    @Test
-    public void testWatchlistPage() {
-        WebDriver driver = getWebDriver();
-        WatchlistPage watchlistPage = new WatchlistPage(driver);
-        watchlistPage.navigateToPage();
-
-        String itemNumber = "303835193497";
-        boolean deleted = watchlistPage.deleteProduct(itemNumber);
-        LOGGER.info("Deleted product {} --- {}", itemNumber, deleted);
-    }
-
-    @Test
-    public void testCartPage() {
-        WebDriver driver = getWebDriver();
-        CartPage cartPage = new CartPage(driver);
-        driver.get("https://cart.ebay.com");
-
-        List<String> items = Arrays.asList("353384596361", "232406019645", "303835193497");
-        for (String item : items) {
-            LOGGER.info(item + " : " + cartPage.getQuantity(item));
+        // Checking Prerequisite
+        if (!viPage.getWatchingText().equals("Add to Watchlist")) {
+            throw new SkipException("Prerequisite for test not fulfilled");
         }
 
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("window.scrollBy(0,200)", "");
+
+        SoftAssert softAssert = new SoftAssert();
+        softAssert.assertTrue(viPage.isWatchlistLinkVisible(),
+                "When item not watched, watch link should be visible");
+
+        int numWatchers = viPage.getNumWatchers();
+        template.addToWatchlist(viPage, watchlistPage, itemId);
+        viPage.navigateItemNumber(itemId);
+
+        softAssert.assertEquals(viPage.getWatchingText(), "Watching",
+                "When item is being watched");
+        softAssert.assertEquals(viPage.getNumWatchers(), numWatchers + 1,
+                "number of watchers when item is watched");
+        softAssert.assertFalse(viPage.isWatchlistLinkVisible(),
+                "When item is watched, watch link should not be visible");
+
+        template.removeFromWatchlist(viPage, watchlistPage, itemId);
+        viPage.navigateItemNumber(itemId);
+        js.executeScript("window.scrollBy(0,200)", "");
+
+        softAssert.assertEquals(viPage.getWatchingText(), "Add to Watchlist",
+                "When item is no longer being watched");
+        softAssert.assertEquals(viPage.getNumWatchers(), numWatchers,
+                "number of watchers when item is no longer watched");
+        softAssert.assertTrue(viPage.isWatchlistLinkVisible(),
+                "when item is no longer watched, watch link should be visible");
+        softAssert.assertAll();
     }
+
+    @DataProvider(name="templates")
+    public static Object[][] getTemplates() {
+        return new Object[][] {
+                {new WatchlistTestTemplate.ClickButtonTemplate() },
+//                {new WatchlistTestTemplate.WatchlistLinkTemplate()}
+                {new WatchlistTestTemplate.WatchlistPageTemplate()}
+        };
+    }
+
+    private final static String SELLER_SAVED_TEXT = "Saved";
+    private final static String SELLER_NOT_SAVED_TEXT = "Save this seller";
+
+    /**
+     * Tests the "save seller" link on the right portion of the page.
+     * Verifies that clicking "Save this seller" link once changes text to "Saved,
+     * and clicking on it again changes text back to original text "Save this seller"
+     */
+    @Test()
+    public void testSaveSeller() {
+        ViewItemPage viPage = ViewItemTest.navigateToPage(driver, itemId);
+
+        // Check prerequisite
+        if (!viPage.getSaveSellerLinkText().equalsIgnoreCase(SELLER_NOT_SAVED_TEXT)) {
+            throw new SkipException("Expecting the seller not be saved");
+        }
+
+        SoftAssert softAssert = new SoftAssert();
+
+        // Save the seller
+        viPage.clickSaveSellerLink();
+        CustomUtilities.sleep(2000);
+        viPage.clickSellerLink();
+        softAssert.assertEquals(sellerPage.getSaveElement().getText(), SELLER_SAVED_TEXT,
+                "On seller page, expected link text to change to " + SELLER_SAVED_TEXT);
+        viPage.navigateItemNumber(itemId);
+        softAssert.assertEquals(viPage.getSaveSellerLinkText(), SELLER_SAVED_TEXT,
+                "On VI page, expected link text to change to " + SELLER_SAVED_TEXT);
+
+        // Unsave the seller
+        viPage.clickSaveSellerLink();
+        CustomUtilities.sleep(2000);
+        softAssert.assertEquals(viPage.getSaveSellerLinkText(), SELLER_NOT_SAVED_TEXT,
+                "On VI page, expected link text to change back to " + SELLER_NOT_SAVED_TEXT);
+        softAssert.assertAll();
+    }
+
+    /**
+     * Tests "Add to Cart" functionality
+     * 1. Click "Add to Cart" button on VI page
+     * 2. When popup window appears, click "Go to Cart" which takes you to Cart page
+     * 3. From the cart page, verify that the quantity of the item is 1
+     * 4. From the cart page, delete the item
+     * 5. Navigate back to the VI page.
+     * 6. From VI page, verify that the "Add to Cart" button appears.
+     */
+    @Test()
+    public void testAddToCart() {
+        ViewItemPage viPage = ViewItemTest.navigateToPage(driver, itemId);
+
+        // Checking prerequisite
+        WebElement cartButton = viPage.getCartButton();
+        if (!cartButton.getText().contains("Add to cart")) {
+            throw new SkipException("The product is already in the cart");
+        }
+
+        cartButton.click();
+        CustomUtilities.sleep(4000); // TODO : replace with explicit wait
+
+        // do not need to switch windows to handle popup
+        viPage.clickAddToCartInsidePopup();
+
+        SoftAssert softAssert = new SoftAssert();
+        softAssert.assertEquals(cartPage.getQuantity(itemId), "1",
+                "The quantity of the product on the cart page should be 1");
+
+        softAssert.assertTrue(cartPage.deleteItem(itemId),
+                "The product was not deleted from the cart page");
+        CustomUtilities.sleep(2000);
+        viPage.navigateItemNumber(itemId);
+        cartButton = viPage.getCartButton();
+        softAssert.assertTrue(cartButton.getText().contains("Add to cart"),
+                "The product should have been removed from the cart");
+        CustomUtilities.sleep(2000);
+
+        softAssert.assertAll();
+    }
+
+    /**
+     * Tests various input to the Set Quantity field
+     */
+    @Test()
+    public void testSetQuantity() {
+        ViewItemPage viPage = ViewItemTest.navigateToPage(driver, itemId);
+
+        int numAvailable = viPage.getNumberAvailable();
+        WebElement textbox = viPage.getQuantityTextbox();
+        textbox.clear();
+        textbox.sendKeys("1");
+        CustomUtilities.sleep(1000);
+        WebElement errorBox = viPage.getQuantityErrorBox();
+        if (numAvailable == 0) {
+            assertTrue("Error box should be displayed", errorBox.isDisplayed());
+        } else {
+            assertFalse("Error box should not be displayed", errorBox.isDisplayed());
+        }
+
+        textbox.clear();
+        textbox.sendKeys("0");
+        CustomUtilities.sleep(1000);
+        assertTrue("Error box should be displayed when entering a quantity of 0",
+                errorBox.isDisplayed());
+
+        textbox.clear();
+        textbox.sendKeys(numAvailable + "");
+        CustomUtilities.sleep(1000);
+        assertFalse("Error box should not be displayed when entering quantity of " + numAvailable,
+                errorBox.isDisplayed());
+
+        textbox.clear();
+        textbox.sendKeys((numAvailable + 1) + "");
+        CustomUtilities.sleep(1000);
+        assertTrue("Error box should be displayed when entering quantity one more than allowable",
+                errorBox.isDisplayed());
+    }
+
 
     private final static String TEST_ITEMS_PROPERTY_FILE
             = "src//test//resources//view_item//test_items.properties";
@@ -102,6 +253,11 @@ public class ViewItemTest extends BaseTest {
             LOGGER.error("Could not load environment file: " + TEST_ITEMS_PROPERTY_FILE);
             e.printStackTrace();
         }
+    }
+
+    @DataProvider(name = KEY_ITEM)
+    public static Object[][] getItemNumbers() {
+        return getItems(KEY_ITEM);
     }
 
     public static Object[][] getItems(String key) {
