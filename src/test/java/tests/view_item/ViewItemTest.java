@@ -7,25 +7,24 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.testng.ITest;
 import org.testng.SkipException;
 import org.testng.annotations.*;
 import org.testng.asserts.SoftAssert;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.Constructor;
 import pages.CartPage;
 import pages.SellerPage;
 import pages.ViewItemPage;
 import pages.WatchlistPage;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.sql.Driver;
-import java.util.Arrays;
-import java.util.List;
+import java.io.*;
 import java.util.Properties;
 
 import static org.testng.AssertJUnit.*;
 import static org.testng.AssertJUnit.assertTrue;
 
-public class ViewItemTest extends BaseTest {
+public class ViewItemTest extends BaseTest implements ITest {
 
     private final static Logger LOGGER = LogManager.getLogger(ViewItemTest.class);
 
@@ -35,12 +34,15 @@ public class ViewItemTest extends BaseTest {
     private SellerPage sellerPage;
     private CartPage cartPage;
 
+    private ProductList.Product product;
     private String itemId;
-    private final static String KEY_ITEM = "items";
+    private final static String DATA_PROVIDER_PRODUCT = "product";
 
-    @Factory(dataProvider = KEY_ITEM)
-    public ViewItemTest(String itemId) {
-        this.itemId = itemId;
+    @Factory(dataProvider = DATA_PROVIDER_PRODUCT)
+    public ViewItemTest(ProductList.Product product) {
+        this.product = product;
+        this.itemId = product.getItemId();
+        LOGGER.info("Product: " + product.toString());
     }
 
     @BeforeMethod
@@ -240,41 +242,28 @@ public class ViewItemTest extends BaseTest {
     }
 
 
-    private final static String TEST_ITEMS_PROPERTY_FILE
-            = "src//test//resources//view_item//test_items.properties";
-
-    private static Properties testItemProperties;
-
-    private static void initializeProperties() {
-        testItemProperties = new Properties();
+    @DataProvider(name=DATA_PROVIDER_PRODUCT)
+    public static Object[][] getTests() {
+        String filename = "src//test//resources//view_item//product_list.yaml";
+        Yaml yaml = new Yaml(new Constructor(ProductList.class));
+        LOGGER.info("yaml initialized to take in a ProductList class");
+        InputStream inputStream = null;
         try {
-            testItemProperties.load(new FileInputStream(TEST_ITEMS_PROPERTY_FILE));
-        } catch (IOException e) {
-            LOGGER.error("Could not load environment file: " + TEST_ITEMS_PROPERTY_FILE);
+            inputStream = new FileInputStream(new File(filename));
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-    }
-
-    @DataProvider(name = KEY_ITEM)
-    public static Object[][] getItemNumbers() {
-        return getItems(KEY_ITEM);
-    }
-
-    public static Object[][] getItems(String key) {
-        if (testItemProperties == null) {
-            initializeProperties();
-        }
-        String items = testItemProperties.getProperty(key);
-        if (items == null) {
-            LOGGER.warn("For test_items properties, " +
-                    "could not grab the items for key {}", key);
-            return null;
-        }
-        String[] ary = items.split(",");
-        Object[][] result = new Object[ary.length][1];
-        for (int i = 0; i < ary.length; i++) {
-            result[i][0] = ary[i];
+        ProductList productList = yaml.load(inputStream);
+        LOGGER.info("product list created");
+        Object[][] result = new Object[productList.getProducts().size()][1];
+        for (int i = 0; i < productList.getProducts().size(); i++) {
+            result[i][0] = productList.getProducts().get(i);
         }
         return result;
+    }
+
+    @Override
+    public String getTestName() {
+        return "ViewItem " + product.getProductTitle();
     }
 }

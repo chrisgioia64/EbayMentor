@@ -34,6 +34,11 @@ public interface WatchlistTestTemplate {
             viPage.clickWatchButton();
             CustomUtilities.sleep(2000);
         }
+
+        @Override
+        public String toString() {
+            return "Clicking watchlist button for add/delete";
+        }
     }
 
     public static class WatchlistLinkTemplate implements WatchlistTestTemplate {
@@ -47,6 +52,11 @@ public interface WatchlistTestTemplate {
         public void removeFromWatchlist(ViewItemPage viPage, WatchlistPage watchlistPage, String itemNumber) {
             viPage.clickWatchButton();
             CustomUtilities.sleep(2000);
+        }
+
+        @Override
+        public String toString() {
+            return "Click Add Watchlist link";
         }
     }
 
@@ -62,6 +72,11 @@ public interface WatchlistTestTemplate {
         public void removeFromWatchlist(ViewItemPage viPage, WatchlistPage watchlistPage, String itemNumber) {
             watchlistPage.navigateToPage();
             watchlistPage.deleteProduct(itemNumber);
+        }
+
+        @Override
+        public String toString() {
+            return "Delete from watchlist page";
         }
     }
 
