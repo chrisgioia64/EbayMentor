@@ -201,6 +201,11 @@ public class ViewItemPage extends EbayPage {
         click(SELECTOR_SELLER_LINK);
     }
 
+    public String getSellerLinkText() {
+        WebElement element = driver.findElement(By.cssSelector(SELECTOR_SELLER_LINK));
+        return element.getText();
+    }
+
     @Override
     public void navigateToPage() {
         throw new IllegalArgumentException("there is no specific view item page");

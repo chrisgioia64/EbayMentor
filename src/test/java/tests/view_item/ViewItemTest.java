@@ -206,7 +206,7 @@ public class ViewItemTest extends BaseTest implements ITest {
     /**
      * Tests various input to the Set Quantity field
      */
-    @Test()
+    @Test
     public void testSetQuantity() {
         ViewItemPage viPage = ViewItemTest.navigateToPage(driver, itemId);
 
@@ -239,6 +239,18 @@ public class ViewItemTest extends BaseTest implements ITest {
         CustomUtilities.sleep(1000);
         assertTrue("Error box should be displayed when entering quantity one more than allowable",
                 errorBox.isDisplayed());
+    }
+
+    @Test
+    public void testProductDetails() {
+        ViewItemPage viPage = ViewItemTest.navigateToPage(driver, itemId);
+
+        SoftAssert softAssert = new SoftAssert();
+        softAssert.assertEquals(viPage.getProductTitle(), product.getProductTitle());
+        softAssert.assertEquals(viPage.getBrandText(), product.getCondition());
+        softAssert.assertEquals(viPage.getSellerLinkText(), product.getSellerName());
+        softAssert.assertEquals(viPage.getPriceAsDouble(), product.getPrice());
+        softAssert.assertAll();
     }
 
 
