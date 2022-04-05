@@ -9,7 +9,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.testng.ITest;
 import org.testng.SkipException;
-import org.testng.annotations.*;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Factory;
+import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
@@ -19,6 +22,8 @@ import pages.ViewItemPage;
 import pages.WatchlistPage;
 
 import java.io.*;
+import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 
 import static org.testng.AssertJUnit.*;
@@ -253,6 +258,58 @@ public class ViewItemTest extends BaseTest implements ITest {
         softAssert.assertAll();
     }
 
+    /**
+     * Tests that if there is a single image (with no previous and forward button),
+     * then there should be no image thumbnail on the left
+     * If there is more than a single image, then there should be an image thumbnail
+     * on the left, and we should be able to view all the image thumbnails
+     * by repeatedly clicking on the next button until it becomes disabled
+     */
+    @Test
+    public void testImageNavigate() {
+        ViewItemPage viPage = ViewItemTest.navigateToPage(driver, itemId);
+
+        List<WebElement> elements = viPage.getImageThumbnails();
+
+        Optional<WebElement> prevButton = viPage.getImagePreviousButton();
+        Optional<WebElement> nextButton = viPage.getImageNextButton();
+
+        if (!prevButton.isPresent()) {
+            assertEquals("If previous button is not present, there should be no image thumbnails",
+                    elements.size(), 0);
+        } else {
+            assertTrue("Next button should be present", nextButton.isPresent());
+            int count = 0;
+            assertTrue("Prev button should be disabled",
+                    isNavigationButtonDisabled(prevButton.get()));
+            assertNthThumbnail(elements, count);
+            while (count < elements.size() - 1) {
+                assertTrue("Next button should be enabled",
+                        !isNavigationButtonDisabled(nextButton.get()));
+                nextButton.get().click();
+                count++;
+                assertNthThumbnail(elements, count);
+            }
+            assertTrue("Prev button should be enabled",
+                    !isNavigationButtonDisabled(prevButton.get()));
+            assertTrue("Next button should be disabled",
+                    isNavigationButtonDisabled(nextButton.get()));
+        }
+    }
+
+    private boolean isNavigationButtonDisabled(WebElement element) {
+        return element.getAttribute("class").contains("disabled");
+    }
+
+    private void assertNthThumbnail(List<WebElement> elements, int index) {
+        if (index < elements.size()) {
+            WebElement element = elements.get(index);
+            assertTrue("The element at index " + index + " should be selected",
+                    element.getAttribute("class").contains("selected"));
+        }
+    }
+
+
 
     @DataProvider(name=DATA_PROVIDER_PRODUCT)
     public static Object[][] getTests() {
@@ -266,7 +323,6 @@ public class ViewItemTest extends BaseTest implements ITest {
             e.printStackTrace();
         }
         ProductList productList = yaml.load(inputStream);
-        LOGGER.info("product list created");
         Object[][] result = new Object[productList.getProducts().size()][1];
         for (int i = 0; i < productList.getProducts().size(); i++) {
             result[i][0] = productList.getProducts().get(i);
@@ -276,6 +332,11 @@ public class ViewItemTest extends BaseTest implements ITest {
 
     @Override
     public String getTestName() {
-        return "ViewItem " + product.getProductTitle();
+        return "ViewItem__ " + product.getProductTitle();
+    }
+
+    @Override
+    public String toString() {
+        return "ViewItem:" + product.getProductTitle();
     }
 }

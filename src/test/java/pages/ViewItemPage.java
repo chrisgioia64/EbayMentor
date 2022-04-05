@@ -8,6 +8,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 public class ViewItemPage extends EbayPage {
 
@@ -42,11 +44,29 @@ public class ViewItemPage extends EbayPage {
 
     public static final String SELECTOR_RATING_PANEL_PRODUCT_RATINGS_TEXT = "#rwid .ebay-reviews-count";
 
+    private static final By SELECTOR_IMAGE_NEXT_BUTTON = By.cssSelector("button.next-arr");
+    private static final By SELECTOR_IMAGE_PREV_BUTTON = By.cssSelector("button.prev-arr");
+
+    private static final By SELECTOR_IMAGE_THUMBNAILS_ALIGN = By.cssSelector("#vertical-align-items-wrapper li");
+
     private final static By SELECTOR_INSIDE_POPUP_ADD_TO_CART_LINK
             = By.cssSelector(".app-atc-layer-redesign-content-wrapper .btn-scnd:nth-child(2)");
 
     public ViewItemPage(WebDriver driver) {
         super(driver);
+    }
+
+    public List<WebElement> getImageThumbnails() {
+        List<WebElement> elements = driver.findElements(SELECTOR_IMAGE_THUMBNAILS_ALIGN);
+        return elements;
+    }
+
+    public Optional<WebElement> getImagePreviousButton() {
+        return driver.findElements(SELECTOR_IMAGE_PREV_BUTTON).stream().findFirst();
+    }
+
+    public Optional<WebElement> getImageNextButton() {
+        return driver.findElements(SELECTOR_IMAGE_NEXT_BUTTON).stream().findFirst();
     }
 
     public String getProductTitle() {
