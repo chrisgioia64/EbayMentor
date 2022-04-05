@@ -1,6 +1,6 @@
 package tests.view_item;
 
-import api.CustomUtilities;
+import base.CustomUtilities;
 import base.BaseTest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,7 +24,6 @@ import pages.WatchlistPage;
 import java.io.*;
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
 
 import static org.testng.AssertJUnit.*;
 import static org.testng.AssertJUnit.assertTrue;

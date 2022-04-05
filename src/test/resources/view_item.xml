@@ -10,13 +10,15 @@
         <classes>
             <class name="base.BaseTest">
             </class>
+            <class name="tests.view_item.ViewItemApiTest" />
             <class name="tests.view_item.ViewItemTest">
                 <methods>
 <!--                    <include name="testWatchlist" />-->
 <!--                    <include name="testSaveSeller" />-->
 <!--                    <include name="testAddToCart" />-->
 <!--                    <include name="testSetQuantity" />-->
-                    <include name="testProductDetails" />
+<!--                    <include name="testProductDetails" />-->
+                    <include name="testImageNavigate" />
                 </methods>
             </class>
         </classes>

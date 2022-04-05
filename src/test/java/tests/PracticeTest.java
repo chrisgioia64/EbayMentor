@@ -1,6 +1,6 @@
 package tests;
 
-import api.CustomUtilities;
+import base.CustomUtilities;
 import base.BaseTest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

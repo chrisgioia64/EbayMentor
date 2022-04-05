@@ -1,15 +1,10 @@
 package tests;
 
-import api.CustomUtilities;
 import base.BaseTest;
 import base.EnvironmentProperties;
 import base.LocaleProperties;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 import org.testng.annotations.Test;
-import pages.EbayHomePage;
 
 import static org.testng.AssertJUnit.assertEquals;
 

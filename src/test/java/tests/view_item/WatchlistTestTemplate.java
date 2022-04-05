@@ -1,10 +1,8 @@
 package tests.view_item;
 
-import api.CustomUtilities;
+import base.CustomUtilities;
 import pages.ViewItemPage;
 import pages.WatchlistPage;
-
-import java.sql.Driver;
 
 /**
  * This defines the sub-operations to be performed on an Add Watchlist/Remove Watchlist test
