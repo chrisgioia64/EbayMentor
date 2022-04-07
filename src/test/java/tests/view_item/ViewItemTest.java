@@ -5,10 +5,8 @@ import base.BaseTest;
 import base.TestNgLogger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.ITest;
 import org.testng.SkipException;
@@ -22,7 +20,6 @@ import pages.ViewItemPage;
 import pages.WatchlistPage;
 import tests.TestGroups;
 
-import javax.swing.text.View;
 import java.io.*;
 import java.util.List;
 import java.util.Optional;
@@ -40,8 +37,8 @@ public class ViewItemTest extends BaseTest implements ITest {
     private SellerPage sellerPage;
     private CartPage cartPage;
 
-    private ProductList.Product product;
-    private String itemId;
+    private final ProductList.Product product;
+    private final String itemId;
     private final static String DATA_PROVIDER_PRODUCT = "product";
 
     @Factory(dataProvider = DATA_PROVIDER_PRODUCT)
@@ -53,7 +50,7 @@ public class ViewItemTest extends BaseTest implements ITest {
     @BeforeMethod
     public void setup() {
         driver = getWebDriver(false);
-        viPage = ViewItemTest.navigateToPage(driver, itemId);
+        viPage = ViewItemTestHelper.navigateToPage(driver, itemId);
         watchlistPage = new WatchlistPage(driver);
         sellerPage = new SellerPage(driver);
         cartPage = new CartPage(driver);
@@ -62,16 +59,6 @@ public class ViewItemTest extends BaseTest implements ITest {
     @AfterMethod
     public void teardown() {
         // TODO
-    }
-
-    /**
-     * Navogates to the View Item page for product with item number ITEM
-     */
-    public static ViewItemPage navigateToPage(WebDriver driver, String item) {
-        ViewItemPage itemPage = new ViewItemPage(driver);
-        itemPage.navigateItemNumber(item);
-        LOGGER.info("Performing test for product name {}", itemPage.getProductTitle());
-        return itemPage;
     }
 
     /**
@@ -98,7 +85,6 @@ public class ViewItemTest extends BaseTest implements ITest {
                 viPage.getNumWatchers() >= 0);
     }
 
-
     /**
      * Check correct behavior by performing adding/removing of item from watchlist
      * via a custom operation (e.g. clicking watchlist button, clicking watchlist link)
@@ -118,17 +104,18 @@ public class ViewItemTest extends BaseTest implements ITest {
             throw new SkipException("Prerequisite for test not fulfilled");
         }
 
-        JavascriptExecutor js = (JavascriptExecutor) driver;
-        js.executeScript("window.scrollBy(0,200)", "");
-
+        // Verification before adding to watchlist
+        viPage.scrollDownAndWait(200, 0);
         SoftAssert softAssert = new SoftAssert();
         softAssert.assertTrue(viPage.isWatchlistLinkVisible(),
                 "When item not watched, watch link should be visible");
-
         int numWatchers = viPage.getNumWatchers();
+
+        // Add to watchlist
         template.addToWatchlist(viPage, watchlistPage, itemId);
         viPage.navigateItemNumber(itemId);
 
+        // Verification after added to watchlist
         softAssert.assertEquals(viPage.getWatchingText(), "Watching",
                 "When item is being watched");
         softAssert.assertEquals(viPage.getNumWatchers(), numWatchers + 1,
@@ -136,10 +123,12 @@ public class ViewItemTest extends BaseTest implements ITest {
         softAssert.assertFalse(viPage.isWatchlistLinkVisible(),
                 "When item is watched, watch link should not be visible");
 
+        // Remove from watchlist
         template.removeFromWatchlist(viPage, watchlistPage, itemId);
         viPage.navigateItemNumber(itemId);
-        js.executeScript("window.scrollBy(0,200)", "");
+        viPage.scrollDownAndWait(200, 0);
 
+        // Verification after removing from watchlist
         softAssert.assertEquals(viPage.getWatchingText(), "Add to Watchlist",
                 "When item is no longer being watched");
         softAssert.assertEquals(viPage.getNumWatchers(), numWatchers,
@@ -240,35 +229,8 @@ public class ViewItemTest extends BaseTest implements ITest {
     @Test(groups = TestGroups.GUEST_OK,
             description = "Test various quantities for item")
     public void testSetQuantity() {
-        int numAvailable = viPage.getNumberAvailable();
-        WebElement textbox = viPage.getQuantityTextbox();
-        textbox.clear();
-        textbox.sendKeys("1");
-        CustomUtilities.sleep(1000);
-        WebElement errorBox = viPage.getQuantityErrorBox();
-        if (numAvailable == 0) {
-            assertTrue("Error box should be displayed", errorBox.isDisplayed());
-        } else {
-            assertFalse("Error box should not be displayed", errorBox.isDisplayed());
-        }
-
-        textbox.clear();
-        textbox.sendKeys("0");
-        CustomUtilities.sleep(1000);
-        assertTrue("Error box should be displayed when entering a quantity of 0",
-                errorBox.isDisplayed());
-
-        textbox.clear();
-        textbox.sendKeys(numAvailable + "");
-        CustomUtilities.sleep(1000);
-        assertFalse("Error box should not be displayed when entering quantity of " + numAvailable,
-                errorBox.isDisplayed());
-
-        textbox.clear();
-        textbox.sendKeys((numAvailable + 1) + "");
-        CustomUtilities.sleep(1000);
-        assertTrue("Error box should be displayed when entering quantity one more than allowable",
-                errorBox.isDisplayed());
+        ViewItemTestHelper.setQuantityTestCase(viPage,
+                ViewItemPage.SELECTOR_QUANTITY_INPUT, ViewItemPage.SELECTOR_QUANTITY_ERROR_BOX);
     }
 
     @Test(groups = TestGroups.GUEST_OK,
@@ -303,7 +265,7 @@ public class ViewItemTest extends BaseTest implements ITest {
         Optional<WebElement> prevButton = viPage.getImagePreviousButton();
         Optional<WebElement> nextButton = viPage.getImageNextButton();
 
-        if (!prevButton.isPresent()) {
+        if (prevButton.isEmpty()) {
             assertEquals("If previous button is not present, there should be no image thumbnails",
                     elements.size(), 0);
         } else {
@@ -314,14 +276,14 @@ public class ViewItemTest extends BaseTest implements ITest {
             assertNthThumbnail(elements, count);
             while (count < elements.size() - 1) {
                 CustomUtilities.sleep(1000);
-                assertTrue("Next button should be enabled",
-                        !isNavigationButtonDisabled(nextButton.get()));
+                assertFalse("Next button should be enabled",
+                        isNavigationButtonDisabled(nextButton.get()));
                 nextButton.get().click();
                 count++;
                 assertNthThumbnail(elements, count);
             }
-            assertTrue("Prev button should be enabled",
-                    !isNavigationButtonDisabled(prevButton.get()));
+            assertFalse("Prev button should be enabled",
+                    isNavigationButtonDisabled(prevButton.get()));
             assertTrue("Next button should be disabled",
                     isNavigationButtonDisabled(nextButton.get()));
         }
@@ -413,9 +375,8 @@ public class ViewItemTest extends BaseTest implements ITest {
         enabled = false)
     public void testSimilarSponsoredItemsNavigate() {
         viPage.scrollDownAndWait(900, 4000);
-
-        TestNgLogger.log("Testing that we can navigate through the image panel for 'Similar sponsored items'");
-        helperTestItemPanelClickThrough(ViewItemPage.TITLE_SIMILAR_SPONSORED_ITEMS, viPage);
+        ViewItemTestHelper.helperTestItemPanelClickThrough(
+                ViewItemPage.TITLE_SIMILAR_SPONSORED_ITEMS, viPage);
     }
 
     /**
@@ -431,29 +392,10 @@ public class ViewItemTest extends BaseTest implements ITest {
         TestNgLogger.log("Testing that we can navigate through the image panel for " +
                 "'Sponsored items based on your recent views'");
 
-        helperTestItemPanelClickThrough(ViewItemPage.TITLE_SPONSORED_ITEMS_RECENT, viPage);
+        ViewItemTestHelper.helperTestItemPanelClickThrough(
+                ViewItemPage.TITLE_SPONSORED_ITEMS_RECENT, viPage);
     }
 
-    private void helperTestItemPanelClickThrough(String itemPanelSelector,
-                                                 ViewItemPage viPage) {
-        Optional<WebElement> element = viPage.getSimilarSponsoredItemsPanel();
-        assertTrue("Panel should be present", element.isPresent());
-        Optional<WebElement> forwardButton = viPage.getForwardButton(element.get());
-        assertTrue("Forward button should be present", forwardButton.isPresent());
-        List<WebElement> items = viPage.getProductItemsFromImagePanel(element.get());
-
-        for (int i = 0; i < 3; i++) {
-            long numDisplayed = viPage.getNumberItemsVisibleInCarousel(items);
-            LOGGER.info("num displayed: " + numDisplayed);
-            CustomUtilities.sleep(2000);
-            assertTrue("Number of displayed must be 5", numDisplayed == 5);
-            if (forwardButton.get().isEnabled()) {
-                forwardButton.get().click();
-            } else {
-                break;
-            }
-        }
-    }
 
     @Test(groups = TestGroups.GUEST_OK,
         description = "Item number displays correctly under 'Description' pane")
@@ -554,38 +496,9 @@ public class ViewItemTest extends BaseTest implements ITest {
         actions.moveToElement(viPage.getTabPanel());
         viPage.scrollDownAndWait(200, 2000);
         viPage.toggleShippingTab();
-
-        int numAvailable = viPage.getNumberAvailable();
-        if (numAvailable != 1) {
-            WebElement textbox = viPage.getQuantityInputInShippingTab();
-            textbox.clear();
-            textbox.sendKeys("1");
-            CustomUtilities.sleep(1000);
-            WebElement errorBox = viPage.getQuantityErrorBoxInShippingTab();
-            if (numAvailable == 0) {
-                assertTrue("Error box should be displayed", errorBox.isDisplayed());
-            } else {
-                assertFalse("Error box should not be displayed", errorBox.isDisplayed());
-            }
-
-            textbox.clear();
-            textbox.sendKeys("0");
-            CustomUtilities.sleep(1000);
-            assertTrue("Error box should be displayed when entering a quantity of 0",
-                    errorBox.isDisplayed());
-
-            textbox.clear();
-            textbox.sendKeys(numAvailable + "");
-            CustomUtilities.sleep(1000);
-            assertFalse("Error box should not be displayed when entering quantity of " + numAvailable,
-                    errorBox.isDisplayed());
-
-            textbox.clear();
-            textbox.sendKeys((numAvailable + 1) + "");
-            CustomUtilities.sleep(1000);
-            assertTrue("Error box should be displayed when entering quantity one more than allowable",
-                    errorBox.isDisplayed());
-        }
+        ViewItemTestHelper.setQuantityTestCase(viPage,
+                ViewItemPage.SELECTOR_SHIPPING_QUANTITY_INPUT,
+                ViewItemPage.SELECTOR_QUANTITY_ERROR_BOX_SHIPPING_TAB);
     }
 
     @DataProvider(name=DATA_PROVIDER_PRODUCT)
@@ -595,7 +508,7 @@ public class ViewItemTest extends BaseTest implements ITest {
         LOGGER.info("yaml initialized to take in a ProductList class");
         InputStream inputStream = null;
         try {
-            inputStream = new FileInputStream(new File(filename));
+            inputStream = new FileInputStream(filename);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

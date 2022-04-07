@@ -25,9 +25,9 @@ public class ViewItemPage extends EbayPage {
     // Selectors in the top middle
     public static final String SELECTOR_PRODUCT_TITLE = "div[data-testid='x-item-title'] span";
     public static final String SELECTOR_BRAND = "div[data-testid='d-item-condition'] .d-item-condition-value span.clipped";
-    public static final String SELECTOR_QUANTITY_INPUT = "#qtyTextBox";
+    public static final By SELECTOR_QUANTITY_INPUT = By.cssSelector("#qtyTextBox");
     public static final String SELECTOR_NUM_AVAILABLE = "#qtySubTxt";
-    public static final String SELECTOR_QUANTITY_ERROR_BOX = "#qtyErrMsg div";
+    public static final By SELECTOR_QUANTITY_ERROR_BOX = By.cssSelector("#qtyErrMsg div");
     public static final String SELECTOR_PRICE_TEXT = "#prcIsum";
     public static final String SELECTOR_PRODUCT_RATINGS_TEXT = "#_rvwlnk";
 
@@ -251,11 +251,11 @@ public class ViewItemPage extends EbayPage {
     }
 
     public WebElement getQuantityTextbox() {
-        return driver.findElement(By.cssSelector(SELECTOR_QUANTITY_INPUT));
+        return driver.findElement(SELECTOR_QUANTITY_INPUT);
     }
 
     public WebElement getQuantityErrorBox() {
-        return driver.findElement(By.cssSelector(SELECTOR_QUANTITY_ERROR_BOX));
+        return driver.findElement(SELECTOR_QUANTITY_ERROR_BOX);
     }
 
     private String getNumberAvailableText() {

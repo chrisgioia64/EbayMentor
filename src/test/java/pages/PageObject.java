@@ -13,6 +13,7 @@ import tests.view_item.ViewItemTest;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -77,6 +78,7 @@ public abstract class PageObject {
         return count;
     }
 
+
     public void scrollDownAndWait(int pixels, int millisecondsWait) {
         JavascriptExecutor js = (JavascriptExecutor) driver;
         js.executeScript("window.scrollBy(0," + pixels + ")", "");
@@ -85,6 +87,15 @@ public abstract class PageObject {
 
     public WebElement findElement(WebElement parentElement, By selector) {
         return wait.until(ExpectedConditions.visibilityOf(parentElement.findElement(selector)));
+    }
+
+
+    public WebElement getElement(By selector) {
+        return wait.until(ExpectedConditions.visibilityOf(driver.findElement(selector)));
+    }
+
+    public Optional<WebElement> getElementOptional(By selector) {
+        return driver.findElements(selector).stream().findFirst();
     }
 
     public boolean isDisplayed(By selector) {
