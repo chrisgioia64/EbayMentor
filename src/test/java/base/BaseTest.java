@@ -24,12 +24,18 @@ public class BaseTest {
         );
     }
 
-    public WebDriver getWebDriver() {
+    public WebDriver getWebDriver(boolean loadUrl) {
         BrowserType type = EnvironmentProperties.getInstance().getBrowser();
         WebDriver driver = DriverFactory.getInstance().getWebdriver(type);
-        driver.get(URL);
+        if (loadUrl) {
+            driver.get(URL);
+        }
         driverPool.add(driver);
         return driver;
+    }
+
+    public WebDriver getWebDriver() {
+        return getWebDriver(true);
     }
 
     @AfterSuite

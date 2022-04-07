@@ -1,5 +1,7 @@
 package tests.view_item;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class ProductList {
@@ -8,6 +10,16 @@ public class ProductList {
 
     public List<Product> getProducts() {
         return products;
+    }
+
+    public List<Product> getIncludedProducts() {
+        List<Product> result = new ArrayList<>();
+        for (Product product : products) {
+            if (product.isIncluded()) {
+                result.add(product);
+            }
+        }
+        return result;
     }
 
     public void setProducts(List<Product> products) {
@@ -25,6 +37,8 @@ public class ProductList {
         private String sellerName;
         /** The price of the item (in the current currency). */
         private double price;
+        /** Should this product be included in the test run. */
+        private boolean included;
 
         public String getItemId() {
             return itemId;
@@ -64,6 +78,14 @@ public class ProductList {
 
         public void setPrice(double price) {
             this.price = price;
+        }
+
+        public boolean isIncluded() {
+            return included;
+        }
+
+        public void setIncluded(boolean included) {
+            this.included = included;
         }
 
         @Override

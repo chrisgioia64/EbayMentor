@@ -1,16 +1,15 @@
 package pages;
 
+import base.CustomUtilities;
 import base.EnvironmentProperties;
 import base.LocaleProperties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import tests.view_item.ViewItemTest;
 
 import java.time.Duration;
 import java.util.List;
@@ -58,6 +57,46 @@ public abstract class PageObject {
         WebElement element = wait.until(ExpectedConditions.visibilityOf(
                 driver.findElement(By.cssSelector(cssSelector))));
         return element;
+    }
+
+    public long getNumberDisplayedElements(List<WebElement> elements) {
+        return elements.stream().filter(x -> x.isDisplayed()).count();
+    }
+
+    public long getNumberClickableElements(List<WebElement> elements) {
+        int count = 0;
+        for (WebElement element : elements) {
+            try {
+                wait.until(ExpectedConditions.elementToBeClickable(element));
+                count++;
+//                LOGGER.info("element is clickable ");
+            } catch (TimeoutException ex) {
+//                LOGGER.info("element is not clickable");
+            }
+        }
+        return count;
+    }
+
+    public void scrollDownAndWait(int pixels, int millisecondsWait) {
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("window.scrollBy(0," + pixels + ")", "");
+        CustomUtilities.sleep(millisecondsWait);
+    }
+
+    public WebElement findElement(WebElement parentElement, By selector) {
+        return wait.until(ExpectedConditions.visibilityOf(parentElement.findElement(selector)));
+    }
+
+    public boolean isDisplayed(By selector) {
+        try {
+            WebElement element = driver.findElement(selector);
+            boolean b = element.isDisplayed();
+//            LOGGER.info("Selector display : " + b);
+            return b;
+        } catch (NoSuchElementException ex) {
+//            LOGGER.info("Could not find selector: " + selector.toString());
+            return false;
+        }
     }
 
     /**

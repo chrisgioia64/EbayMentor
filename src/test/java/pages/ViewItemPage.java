@@ -4,10 +4,14 @@ import base.CustomUtilities;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,17 +22,19 @@ public class ViewItemPage extends EbayPage {
     // Selectors
     public static final String SELECTOR_ADD_TO_WATCHLIST_LINK = "#linkTopAct";
 
+    // Selectors in the top middle
     public static final String SELECTOR_PRODUCT_TITLE = "div[data-testid='x-item-title'] span";
     public static final String SELECTOR_BRAND = "div[data-testid='d-item-condition'] .d-item-condition-value span.clipped";
     public static final String SELECTOR_QUANTITY_INPUT = "#qtyTextBox";
     public static final String SELECTOR_NUM_AVAILABLE = "#qtySubTxt";
     public static final String SELECTOR_QUANTITY_ERROR_BOX = "#qtyErrMsg div";
     public static final String SELECTOR_PRICE_TEXT = "#prcIsum";
+    public static final String SELECTOR_PRODUCT_RATINGS_TEXT = "#_rvwlnk";
 
+    // Three main buttons
     public static final String SELECTOR_BUY_IT_NOW = "#binBtn_btn";
     public static final String SELECTOR_VIEW_IN_CART = "#vi-viewInCartBtn";
     public static final String SELECTOR_ADD_CART = "#atcRedesignId_btn";
-    //    public static final String SELECTOR_WATCHING = "#vi-atl-lnk-99 .vi-atw-txt";
     public static final String SELECTOR_WATCHING = "#vi-atl-lnk-99";
 
     public static final String SELECTOR_NUM_WATCHERS = "#why2buy .w2b-cnt:nth-child(3)";
@@ -40,20 +46,173 @@ public class ViewItemPage extends EbayPage {
     public static final String SELECTOR_CONTACT_SELLER_LINK
             = "div[data-testid='x-about-this-seller'] div div:nth-child(3) div:nth-child(2) a";
 
-    public static final String SELECTOR_PRODUCT_RATINGS_TEXT = "#_rvwlnk";
 
-    public static final String SELECTOR_RATING_PANEL_PRODUCT_RATINGS_TEXT = "#rwid .ebay-reviews-count";
+    // Rating Panel at the bottom of the page
+    private static final String SELECTOR_PRODUCT_RATING_DIV = "#review-ratings-cntr";
+    private static final String SELECTOR_RATING_PANEL = "#rwid";
+    private static final String SELECTOR_RATING_PANEL_PRODUCT_RATINGS_TEXT = "#rwid .ebay-reviews-count";
+    /** The popup for the ratings. */
+    private static final String SELECTOR_PRODUCT_RATING_POPUP = "#histogramid";
+    private static final String SELECTOR_PRODUCT_RATING_NUMBER = ".ebay-review-start-rating";
 
+    // Image Carousel Elements
+    private static final By SELECTOR_IMAGE_BUTTON = By.cssSelector("#linkMainImg");
     private static final By SELECTOR_IMAGE_NEXT_BUTTON = By.cssSelector("button.next-arr");
     private static final By SELECTOR_IMAGE_PREV_BUTTON = By.cssSelector("button.prev-arr");
-
     private static final By SELECTOR_IMAGE_THUMBNAILS_ALIGN = By.cssSelector("#vertical-align-items-wrapper li");
 
+    // Other Merchandise Carousels
+    private static final By SELECTOR_MERCHANDISE_PANEL = By.cssSelector(".merch-module");
+    private static final By SELECTOR_MERCHANDISE_PANEL_TITLE = By.cssSelector(".merch-title");
+    private static final By SELECTOR_MERCHANDISE_BUTTON = By.cssSelector(".carousel__control");
+    private static final By SELECTOR_MERCHANDISE_ITEMS = By.cssSelector(".carousel__viewport li");
+
+    public static final String TITLE_SIMILAR_SPONSORED_ITEMS = "Similar sponsored items";
+    public static final String TITLE_SPONSORED_ITEMS_RECENT = "Sponsored items based on your recent views";
+
+    // Tabs -- Description and Shipping
+    private static final By SELECTOR_ITEM_DESCRIPTION_DIV = By.cssSelector("#descItemNumber");
+    private static final By SELECTOR_TAB_PANEL = By.cssSelector("#BottomPanelDF .tabbable");
+    public static final By SELECTOR_DESCRIPTION_TAB_BUTTON
+            = By.cssSelector("#BottomPanelDF .tabbable .nav li:nth-child(1)");
+    public static final By SELECTOR_SHIPPING_TAB_BUTTON
+            = By.cssSelector("#BottomPanelDF .tabbable .nav li:nth-child(2)");
+    public static final By SELECTOR_DESCRIPTION_PANE
+            = By.cssSelector("#BottomPanelDF .tabbable .tab-content-m .tab-pane:nth-child(1)");
+    public static final By SELECTOR_SHIPPING_PANE
+            = By.cssSelector("#BottomPanelDF .tabbable .tab-content-m .tab-pane:nth-child(2)");
+    public static final By SELECTOR_COUNTRY_DROPDOWN = By.cssSelector("#shCountry");
+    public static final By SELECTOR_ZIP_CODE_INPUT = By.cssSelector("#shZipCode");
+    public static final By SELECTOR_SHIPPING_QUANTITY_INPUT = By.cssSelector("#shQuantity");
+    public static final By SELECTOR_QUANTITY_ERROR_BOX_SHIPPING_TAB = By.cssSelector("#shQuantity-errTxt");
+
+    // The Web Element inside the popup that happens when clicking "Add to Cart"
     private final static By SELECTOR_INSIDE_POPUP_ADD_TO_CART_LINK
             = By.cssSelector(".app-atc-layer-redesign-content-wrapper .btn-scnd:nth-child(2)");
 
     public ViewItemPage(WebDriver driver) {
         super(driver);
+    }
+
+    public WebElement getQuantityInputInShippingTab() {
+        return driver.findElement(SELECTOR_SHIPPING_QUANTITY_INPUT);
+    }
+
+    public WebElement getQuantityErrorBoxInShippingTab() {
+        return driver.findElement(SELECTOR_QUANTITY_ERROR_BOX_SHIPPING_TAB);
+    }
+
+    public void selectCountry(String displayedCountry) {
+        WebElement element = driver.findElement(SELECTOR_COUNTRY_DROPDOWN);
+        Select select = new Select(element);
+        select.selectByVisibleText(displayedCountry);
+    }
+
+    public boolean isZipCodeInputDisplayed() {
+        return isDisplayed(SELECTOR_ZIP_CODE_INPUT);
+    }
+
+    public boolean isQuantityInputDisplayed() {
+        return isDisplayed(SELECTOR_SHIPPING_QUANTITY_INPUT);
+    }
+
+    public WebElement getTabPanel() {
+        return driver.findElement(SELECTOR_TAB_PANEL);
+    }
+
+    public void toggleDescriptionTab() {
+        click(SELECTOR_DESCRIPTION_TAB_BUTTON);
+    }
+
+    public void toggleShippingTab() {
+        click(SELECTOR_SHIPPING_TAB_BUTTON);
+    }
+
+    public boolean isDescriptionTabDisplayed() {
+        return isDisplayed(SELECTOR_DESCRIPTION_PANE);
+    }
+
+    public boolean isShippingTabDisplayed() {
+        return isDisplayed(SELECTOR_SHIPPING_PANE);
+    }
+
+    public boolean isCountryDropdownDisplayed() {
+        return isDisplayed(SELECTOR_COUNTRY_DROPDOWN);
+    }
+
+    public Optional<WebElement> getItemNumberElement() {
+        return driver.findElements(SELECTOR_ITEM_DESCRIPTION_DIV).stream().findFirst();
+    }
+
+    public boolean containsProductRatingAtTop() {
+        return elementExists(SELECTOR_PRODUCT_RATING_DIV);
+    }
+
+    public int getNumberItemsVisibleInCarousel(List<WebElement> elements) {
+        int count = 0;
+        List<Integer> items = new LinkedList<>();
+        int index = 0;
+        for (WebElement element : elements) {
+            String attributeValue = element.getAttribute("aria-hidden");
+            if (attributeValue == null) {
+                count++;
+                items.add(index);
+            }
+//            LOGGER.info(attributeValue);
+            index++;
+        }
+        LOGGER.info("Items visible: " + items.toString());
+        return count;
+    }
+
+    public Optional<WebElement> getBackButton(WebElement element) {
+        List<WebElement> list = element.findElements(SELECTOR_MERCHANDISE_BUTTON);
+        if (list.size() == 2) {
+            return Optional.of(list.get(0));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    public Optional<WebElement> getForwardButton(WebElement element) {
+        List<WebElement> list = element.findElements(SELECTOR_MERCHANDISE_BUTTON);
+        if (list.size() == 2) {
+            return Optional.of(list.get(1));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    public List<WebElement> getProductItemsFromImagePanel(WebElement imageElement) {
+        List<WebElement> list = imageElement.findElements(SELECTOR_MERCHANDISE_ITEMS);
+        return list;
+    }
+
+    public Optional<WebElement> getMerchandiseItemsPanel(String title) {
+        return driver.findElements(SELECTOR_MERCHANDISE_PANEL)
+                .stream()
+                .filter(x -> {
+                    try {
+                        WebElement childElement = findElement(x, SELECTOR_MERCHANDISE_PANEL_TITLE);
+                        LOGGER.info("text: " + childElement.getText());
+                        return childElement.getText().contains(title);
+                    } catch (NoSuchElementException ex) {
+                        return false;
+                    }
+                })
+                .findFirst();
+    }
+
+    public Optional<WebElement> getSimilarSponsoredItemsPanel() {
+        return getMerchandiseItemsPanel(TITLE_SIMILAR_SPONSORED_ITEMS);
+    }
+
+    public Optional<WebElement> getSponsoredRecentItemPanel() {
+        return getMerchandiseItemsPanel(TITLE_SPONSORED_ITEMS_RECENT);
+    }
+
+    public Optional<WebElement> getProductRatingSection() {
+        return driver.findElements(By.cssSelector(SELECTOR_RATING_PANEL)).stream().findFirst();
     }
 
     public List<WebElement> getImageThumbnails() {
@@ -68,6 +227,15 @@ public class ViewItemPage extends EbayPage {
     public Optional<WebElement> getImageNextButton() {
         return driver.findElements(SELECTOR_IMAGE_NEXT_BUTTON).stream().findFirst();
     }
+
+    public WebElement getProductTitleElement() {
+        return driver.findElement(By.cssSelector(SELECTOR_PRODUCT_TITLE));
+    }
+
+    public WebElement getBrandElement() {
+        return driver.findElement(By.cssSelector(SELECTOR_BRAND));
+    }
+
 
     public String getProductTitle() {
         return getText(SELECTOR_PRODUCT_TITLE);
@@ -224,6 +392,10 @@ public class ViewItemPage extends EbayPage {
     public String getSellerLinkText() {
         WebElement element = driver.findElement(By.cssSelector(SELECTOR_SELLER_LINK));
         return element.getText();
+    }
+
+    public WebElement getImageButton() {
+        return driver.findElement(SELECTOR_IMAGE_BUTTON);
     }
 
     @Override

@@ -32,7 +32,7 @@ public class DriverFactory {
 
     private void initializaLocalProperties() {
         System.setProperty("webdriver.edge.driver", getDriverLocation("msedgedriver.exe"));
-        System.setProperty("webdriver.chrome.driver",getDriverLocation("chromedriver.exe"));
+        System.setProperty("webdriver.chrome.driver",getDriverLocation("chromedriver_99.exe"));
         System.setProperty("webdriver.gecko.driver", getDriverLocation("geckodriver.exe"));
         System.setProperty("webdriver.ie.driver", getDriverLocation("IEDriverServer.exe"));
     }

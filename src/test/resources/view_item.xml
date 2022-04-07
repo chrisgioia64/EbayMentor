@@ -13,12 +13,27 @@
             <class name="tests.view_item.ViewItemApiTest" />
             <class name="tests.view_item.ViewItemTest">
                 <methods>
+<!--                    <include name="testDisplayElements"/>-->
+<!--                    <include name="testNumberWatchersNonnegative"/>-->
 <!--                    <include name="testWatchlist" />-->
 <!--                    <include name="testSaveSeller" />-->
 <!--                    <include name="testAddToCart" />-->
 <!--                    <include name="testSetQuantity" />-->
+
 <!--                    <include name="testProductDetails" />-->
-                    <include name="testImageNavigate" />
+<!--                    <include name="testImageDisplayed" />-->
+<!--                    <include name="testImageNavigate" />-->
+<!--                    <include name="testProductRatingsSectionAvailable" />-->
+<!--                    <include name="testSimilarSponsoredItemsAvailable" />-->
+<!--                    <include name="testSponsoredItemsRecentView" />-->
+<!--                    <include name="testSimilarSponsoredItemsNavigate" />-->
+<!--                    <include name="testSponsoredItemsRecentViewsNavigate" />-->
+<!--                    <include name="testItemNumberDisplay" />-->
+<!--                    <include name="testToggleTabs" />-->
+<!--                    <include name="testQuantityInShippingTab" />-->
+<!--                    <include name="testCountryDropdownVisible" />-->
+<!--                    <include name="testZipCodeToggle" />-->
+                    <include name="testSetQuantityInputInShippingTab" />
                 </methods>
             </class>
         </classes>

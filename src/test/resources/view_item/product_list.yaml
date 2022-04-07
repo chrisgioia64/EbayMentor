@@ -4,8 +4,16 @@ products:
     condition: "Brand New"
     sellerName: "supla-us"
     price: 87.96
+    included: true
   - itemId: 192238685975
     productTitle: "JLPT N4 Grammar Shin Kanzen Master Japanese Language Proficiency Test Japan"
     condition: "Brand New"
     sellerName: "reckless_yokohama"
     price: 34.99
+    included: true
+  - itemId: 1601852553
+    productTitle: "JLPT N4 JAPANESE LAUGUAGE PROFICIENCY TEST OFFICIAL BOOK By Japan Foundation NEW"
+    condition: "Brand New"
+    sellerName: "zuber"
+    price: 28.95
+    included: false
