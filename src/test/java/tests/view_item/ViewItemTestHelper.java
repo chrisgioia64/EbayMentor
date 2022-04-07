@@ -85,4 +85,17 @@ public class ViewItemTestHelper {
                     errorBox.isDisplayed());
         }
     }
+
+
+    public static boolean isNavigationButtonDisabled(WebElement element) {
+        return element.getAttribute("class").contains("disabled");
+    }
+
+    public static void assertNthThumbnail(List<WebElement> elements, int index) {
+        if (index < elements.size()) {
+            WebElement element = elements.get(index);
+            assertTrue("The element at index " + index + " should be selected",
+                    element.getAttribute("class").contains("selected"));
+        }
+    }
 }
