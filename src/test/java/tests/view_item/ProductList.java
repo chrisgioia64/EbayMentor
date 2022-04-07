@@ -29,6 +29,8 @@ public class ProductList {
     public static class Product {
         /** The product item id used in the url. */
         private String itemId;
+        /** A note to the developer that helps identify the product. */
+        private String note;
         /** The product title as it appears on the top of the VI page. */
         private String productTitle;
         /** The condition of the book (e.g. "Brand New") */
@@ -46,6 +48,14 @@ public class ProductList {
 
         public void setItemId(String itemId) {
             this.itemId = itemId;
+        }
+
+        public String getNote() {
+            return note;
+        }
+
+        public void setNote(String note) {
+            this.note = note;
         }
 
         public String getProductTitle() {
@@ -90,8 +100,7 @@ public class ProductList {
 
         @Override
         public String toString() {
-            return this.itemId + ", " + this.productTitle + ", " + this.condition +
-                    ", "  + this.sellerName + ", " + this.price;
+            return this.note + " : " + itemId;
         }
     }
 
