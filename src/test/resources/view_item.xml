@@ -15,29 +15,31 @@
             <class name="tests.view_item.ViewItemApiTest" />
             <class name="tests.view_item.ViewItemTest">
                 <methods>
-                    <include name="testDisplayElements"/>
-                    <include name="testNumberWatchersNonnegative"/>
+<!--                    <include name="testDisplayElements"/>-->
+<!--                    <include name="testNumberWatchersNonnegative"/>-->
 <!--                    <include name="testWatchlist" />-->
 <!--                    <include name="testSaveSeller" />-->
 <!--                    <include name="testAddToCart" />-->
-                    <include name="testSetQuantity" />
+<!--                    <include name="testSetQuantity" />-->
 
-                    <include name="testProductDetails" />
-                    <include name="testImageDisplayed" />
-                    <include name="testImageNavigate" />
-                    <include name="testProductRatingsSectionAvailable" />
+<!--                    <include name="testProductDetails" />-->
+<!--                    <include name="testImageDisplayed" />-->
+<!--                    <include name="testImageNavigate" />-->
+<!--                    <include name="testProductRatingsSectionAvailable" />-->
 
 <!--&lt;!&ndash;                    <include name="testSimilarSponsoredItemsAvailable" />&ndash;&gt;-->
 <!--&lt;!&ndash;                    <include name="testSponsoredItemsRecentView" />&ndash;&gt;-->
 <!--&lt;!&ndash;                    <include name="testSimilarSponsoredItemsNavigate" />&ndash;&gt;-->
 <!--&lt;!&ndash;                    <include name="testSponsoredItemsRecentViewsNavigate" />&ndash;&gt;-->
 
-                    <include name="testItemNumberDisplay" />
-                    <include name="testToggleTabs" />
-                    <include name="testQuantityInShippingTab" />
-                    <include name="testCountryDropdownVisible" />
-                    <include name="testZipCodeToggle" />
-                    <include name="testSetQuantityInputInShippingTab" />
+<!--                    <include name="testItemNumberDisplay" />-->
+<!--                    <include name="testToggleTabs" />-->
+<!--                    <include name="testQuantityInShippingTab" />-->
+<!--                    <include name="testCountryDropdownVisible" />-->
+<!--                    <include name="testZipCodeToggle" />-->
+<!--                    <include name="testSetQuantityInputInShippingTab" />-->
+                    <include name="testQuantityInputFocusable" />
+                    <include name="testQuantityBoxInputInShippingTabFocusable" />
 
                 </methods>
             </class>

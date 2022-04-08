@@ -116,6 +116,10 @@ public class ViewItemPage extends EbayPage {
         return isDisplayed(SELECTOR_SHIPPING_QUANTITY_INPUT);
     }
 
+    public Optional<WebElement> getQuantityInputInShippingTabElement() {
+        return driver.findElements(SELECTOR_SHIPPING_QUANTITY_INPUT).stream().findFirst();
+    }
+
     public WebElement getTabPanel() {
         return driver.findElement(SELECTOR_TAB_PANEL);
     }
@@ -246,12 +250,12 @@ public class ViewItemPage extends EbayPage {
     }
 
     public String getQuantityString() {
-        WebElement element = getQuantityTextbox();
+        WebElement element = getQuantityTextbox().get();
         return element.getAttribute("value");
     }
 
-    public WebElement getQuantityTextbox() {
-        return driver.findElement(SELECTOR_QUANTITY_INPUT);
+    public Optional<WebElement> getQuantityTextbox() {
+        return driver.findElements(SELECTOR_QUANTITY_INPUT).stream().findFirst();
     }
 
     public WebElement getQuantityErrorBox() {
@@ -260,6 +264,10 @@ public class ViewItemPage extends EbayPage {
 
     private String getNumberAvailableText() {
         return getText(SELECTOR_NUM_AVAILABLE);
+    }
+
+    public Optional<WebElement> getNumberAvailableElement() {
+        return driver.findElements(By.cssSelector(SELECTOR_NUM_AVAILABLE)).stream().findFirst();
     }
 
     public int getNumberAvailable() {

@@ -6,6 +6,7 @@ import base.LocaleProperties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -102,10 +103,8 @@ public abstract class PageObject {
         try {
             WebElement element = driver.findElement(selector);
             boolean b = element.isDisplayed();
-//            LOGGER.info("Selector display : " + b);
             return b;
         } catch (NoSuchElementException ex) {
-//            LOGGER.info("Could not find selector: " + selector.toString());
             return false;
         }
     }
@@ -125,7 +124,6 @@ public abstract class PageObject {
 
     protected boolean elementExists(WebElement element, By cssSelector) {
         try {
-//            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(cssSelector)));
             element.findElement(cssSelector);
             return true;
         } catch (NoSuchElementException ex) {
@@ -135,7 +133,6 @@ public abstract class PageObject {
 
     protected boolean elementExists(String cssSelector) {
         try {
-//            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(cssSelector)));
             driver.findElement(By.cssSelector(cssSelector));
             return true;
         } catch (NoSuchElementException ex) {
@@ -168,8 +165,6 @@ public abstract class PageObject {
 
     /**
      * Returns the first web element that exist from the list of selectors
-     * @param cssSelectors
-     * @return
      */
     public WebElement getFirstAvailableElement(List<String> cssSelectors) {
         for (String cssSelector : cssSelectors) {
@@ -179,6 +174,36 @@ public abstract class PageObject {
         }
         LOGGER.warn("Could not find an available element out of CSS selectors {}", cssSelectors);
         return null;
+    }
+
+    public boolean focusable(By selector) {
+        try {
+            WebElement element = wait.until(ExpectedConditions.visibilityOf(
+                    driver.findElement(selector)));
+            Actions actions = new Actions(driver);
+            if (element.equals(driver.switchTo().activeElement())) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (NoSuchElementException ex) {
+            return false;
+        }
+    }
+
+    public boolean focusable(WebElement element) {
+        Actions actions = new Actions(driver);
+        try {
+            WebElement focusedElement = driver.switchTo().activeElement();
+            if (element.equals(focusedElement)) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            LOGGER.info("There was an error when trying to switch to element: " + element);
+            return false;
+        }
     }
 
     /**

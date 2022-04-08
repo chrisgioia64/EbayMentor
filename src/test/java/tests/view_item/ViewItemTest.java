@@ -74,7 +74,7 @@ public class ViewItemTest extends BaseTest implements ITest {
                 "Product title element should be displayed");
         softAssert.assertTrue(viPage.getBrandElement().isDisplayed(),
                 "Condition text should be displayed");
-        softAssert.assertTrue(viPage.getQuantityTextbox().isDisplayed(),
+        softAssert.assertTrue(viPage.getQuantityTextbox().get().isDisplayed(),
                 "Quantity textbox should be displayed");
         softAssert.assertAll();
     }
@@ -490,6 +490,35 @@ public class ViewItemTest extends BaseTest implements ITest {
         ViewItemTestHelper.setQuantityTestCase(viPage,
                 ViewItemPage.SELECTOR_SHIPPING_QUANTITY_INPUT,
                 ViewItemPage.SELECTOR_QUANTITY_ERROR_BOX_SHIPPING_TAB);
+    }
+
+    @Test(groups = TestGroups.GUEST_OK,
+            description = "Tests that the quantity input is focusable")
+    public void testQuantityInputFocusable() {
+        Optional<WebElement> quantityBox = viPage.getQuantityTextbox();
+        if (quantityBox.isPresent()) {
+            quantityBox.get().click();
+            assertTrue("Quantity box should be focusable",
+                    viPage.focusable(quantityBox.get()));
+        } else {
+            throw new SkipException("there is no quantity box present");
+        }
+    }
+
+    @Test(groups = TestGroups.GUEST_OK,
+            description = "Tests that the quantity input in the shipping tab is focusable")
+    public void testQuantityBoxInputInShippingTabFocusable() {
+        Optional<WebElement> quantityBox = viPage.getQuantityInputInShippingTabElement();
+        if (quantityBox.isPresent()) {
+            Actions actions = new Actions(driver);
+            actions.moveToElement(viPage.getTabPanel());
+            viPage.toggleShippingTab();
+            quantityBox.get().click();
+            assertTrue("Quantity box should be focusable",
+                    viPage.focusable(quantityBox.get()));
+        } else {
+            throw new SkipException("there is no quantity box present");
+        }
     }
 
     @DataProvider(name=DATA_PROVIDER_PRODUCT)
