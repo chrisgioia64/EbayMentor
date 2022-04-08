@@ -9,6 +9,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.ITest;
+import org.testng.ITestContext;
+import org.testng.ITestResult;
 import org.testng.SkipException;
 import org.testng.annotations.*;
 import org.testng.asserts.SoftAssert;
@@ -48,7 +50,7 @@ public class ViewItemTest extends BaseTest implements ITest {
     }
 
     @BeforeMethod
-    public void setup() {
+    public void setup(ITestResult result) {
         driver = getWebDriver(false);
         viPage = ViewItemTestHelper.navigateToPage(driver, itemId);
         watchlistPage = new WatchlistPage(driver);
