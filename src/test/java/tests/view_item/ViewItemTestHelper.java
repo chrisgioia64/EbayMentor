@@ -12,8 +12,7 @@ import pages.ViewItemPage;
 import java.util.List;
 import java.util.Optional;
 
-import static org.testng.AssertJUnit.assertFalse;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.AssertJUnit.*;
 
 public class ViewItemTestHelper {
 
@@ -32,19 +31,18 @@ public class ViewItemTestHelper {
     /**
      * Click on the "forward" button repeatedly in a panel of images
      */
-    public static void helperTestItemPanelClickThrough(String itemPanelTitle,
+    public static void helperTestItemPanelClickThrough(Optional<WebElement> merchandiseElement,
                                                  ViewItemPage viPage) {
-        Optional<WebElement> element = viPage.getMerchandiseItemsPanel(itemPanelTitle);
-        assertTrue("Panel should be present", element.isPresent());
-        Optional<WebElement> forwardButton = viPage.getForwardButton(element.get());
+        Optional<WebElement> forwardButton = viPage.getForwardButton(
+                merchandiseElement.get());
         assertTrue("Forward button should be present", forwardButton.isPresent());
-        List<WebElement> items = viPage.getProductItemsFromImagePanel(element.get());
+        List<WebElement> items = viPage.getProductItemsFromImagePanel(
+                merchandiseElement.get());
 
         for (int i = 0; i < 3; i++) {
             long numDisplayed = viPage.getNumberItemsVisibleInCarousel(items);
-            LOGGER.info("num displayed: " + numDisplayed);
             CustomUtilities.sleep(2000);
-            assertTrue("Number of displayed must be 5", numDisplayed == 5);
+            assertEquals("Number of displayed must be 5", 5, numDisplayed);
             if (forwardButton.get().isEnabled()) {
                 forwardButton.get().click();
             } else {
@@ -86,6 +84,25 @@ public class ViewItemTestHelper {
         }
     }
 
+    /**
+     * There are two quantity textboxes. One at the top of the page, and one in
+     * "Shipping" tab. This is a generic method that enters in input that should
+     * result in an error.
+     */
+    public static void setQuantityNegativeTestCases(ViewItemPage viPage,
+                                                    By textboxSelector, By errorBoxSelector,
+                                                    List<String> negativeInputs) {
+        int numAvailable = viPage.getNumberAvailable();
+        Optional<WebElement> textbox = viPage.getElementOptional(textboxSelector);
+        Optional<WebElement> errorBox = viPage.getElementOptional(errorBoxSelector);
+        if (textbox.isPresent() && numAvailable >= 1) {
+            assertTrue("Error box should be present", errorBox.isPresent());
+            for (String negativeInput : negativeInputs) {
+                enterAndAssert(textbox.get(), errorBox.get(), negativeInput, true);
+            }
+        }
+    }
+
 
     public static boolean isNavigationButtonDisabled(WebElement element) {
         return element.getAttribute("class").contains("disabled");
@@ -98,4 +115,6 @@ public class ViewItemTestHelper {
                     element.getAttribute("class").contains("selected"));
         }
     }
+
+
 }

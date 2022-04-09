@@ -192,6 +192,7 @@ public abstract class PageObject {
     }
 
     public boolean focusable(WebElement element) {
+        element.click();
         Actions actions = new Actions(driver);
         try {
             WebElement focusedElement = driver.switchTo().activeElement();

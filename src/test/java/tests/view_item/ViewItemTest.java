@@ -2,9 +2,11 @@ package tests.view_item;
 
 import base.CustomUtilities;
 import base.BaseTest;
+import base.EbayLocale;
 import base.TestNgLogger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -23,8 +25,10 @@ import pages.WatchlistPage;
 import tests.TestGroups;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.testng.AssertJUnit.*;
 import static org.testng.AssertJUnit.assertTrue;
@@ -366,8 +370,8 @@ public class ViewItemTest extends BaseTest implements ITest {
         enabled = false)
     public void testSimilarSponsoredItemsNavigate() {
         viPage.scrollDownAndWait(900, 4000);
-        ViewItemTestHelper.helperTestItemPanelClickThrough(
-                ViewItemPage.TITLE_SIMILAR_SPONSORED_ITEMS, viPage);
+        Optional<WebElement> webElement = viPage.getSimilarSponsoredItemsPanel();
+        ViewItemTestHelper.helperTestItemPanelClickThrough(webElement, viPage);
     }
 
     /**
@@ -383,8 +387,8 @@ public class ViewItemTest extends BaseTest implements ITest {
         TestNgLogger.log("Testing that we can navigate through the image panel for " +
                 "'Sponsored items based on your recent views'");
 
-        ViewItemTestHelper.helperTestItemPanelClickThrough(
-                ViewItemPage.TITLE_SPONSORED_ITEMS_RECENT, viPage);
+        Optional<WebElement> webElement = viPage.getSponsoredRecentItemPanel();
+        ViewItemTestHelper.helperTestItemPanelClickThrough(webElement, viPage);
     }
 
 
@@ -497,7 +501,6 @@ public class ViewItemTest extends BaseTest implements ITest {
     public void testQuantityInputFocusable() {
         Optional<WebElement> quantityBox = viPage.getQuantityTextbox();
         if (quantityBox.isPresent()) {
-            quantityBox.get().click();
             assertTrue("Quantity box should be focusable",
                     viPage.focusable(quantityBox.get()));
         } else {
@@ -513,11 +516,224 @@ public class ViewItemTest extends BaseTest implements ITest {
             Actions actions = new Actions(driver);
             actions.moveToElement(viPage.getTabPanel());
             viPage.toggleShippingTab();
-            quantityBox.get().click();
             assertTrue("Quantity box should be focusable",
                     viPage.focusable(quantityBox.get()));
         } else {
             throw new SkipException("there is no quantity box present");
+        }
+    }
+
+    @Test(groups = TestGroups.GUEST_OK,
+        description = "Tests that the country dropdown in the shipping tab is focusable")
+    public void testCountryDropdownFocusable() {
+        Optional<WebElement> dropdown = viPage.getCountryDropdownElement();
+        if (dropdown.isPresent()) {
+            Actions actions = new Actions(driver);
+            actions.moveToElement(viPage.getTabPanel());
+            viPage.toggleShippingTab();
+            assertTrue("Country dropdown should be focusable",
+                    viPage.focusable(dropdown.get()));
+        } else {
+            throw new SkipException("there is no dropdown present");
+        }
+    }
+
+    @Test(groups = TestGroups.GUEST_OK,
+            description = "Tests that the zip code input in the shipping tab is focusable")
+    public void testZipCodeInputFocusable() {
+        Optional<WebElement> zipCode = viPage.getZipCodeInputElement();
+        if (zipCode.isPresent()) {
+            Actions actions = new Actions(driver);
+            actions.moveToElement(viPage.getTabPanel());
+            viPage.toggleShippingTab();
+            viPage.selectCountry(CountryDropdownChoices.US.getDisplayName());
+            if (zipCode.get().isDisplayed()) {
+                assertTrue("Zip code should be focusable",
+                        viPage.focusable(zipCode.get()));
+            } else {
+                throw new SkipException("could not make the zip code input displayed");
+            }
+        } else {
+            throw new SkipException("there is no zip code present");
+        }
+    }
+
+    @Test(groups = TestGroups.GUEST_OK,
+        description = "Does the include/exclude text match what is shown in the country dropdown")
+    public void testCountryDropdownValuesMatchText() {
+        Actions actions = new Actions(driver);
+        actions.moveToElement(viPage.getTabPanel());
+        viPage.toggleShippingTab();
+
+        SoftAssert softAssert = new SoftAssert();
+        Set<String> excludedCountries = viPage.getCountryExcludeList();
+        boolean shippingWorldwide = viPage.shippingWorldwide();
+        Set<String> countriesShippingTo = viPage.countriesShippingTo();
+
+        if (shippingWorldwide) {
+            for (CountryDropdownChoices country : CountryDropdownChoices.values()) {
+                String countryName = country.getDisplayName();
+                if (excludedCountries.contains(countryName)) {
+                    softAssert.assertFalse(viPage.isCountryInDropdown(countryName),
+                            countryName + " is excluded and should not be in dropdown");
+                } else {
+                    softAssert.assertTrue(viPage.isCountryInDropdown(countryName),
+                            "worldwide shipping: " + countryName
+                                    + " is not excluded and should be in dropdown");
+                }
+            }
+        } else {
+            for (CountryDropdownChoices country : CountryDropdownChoices.values()) {
+                String countryName = country.getDisplayName();
+                if (countriesShippingTo.contains(countryName)) {
+                    softAssert.assertTrue(viPage.isCountryInDropdown(countryName),
+                            countryName + " is in list of shipping countries");
+                } else {
+                    softAssert.assertFalse(viPage.isCountryInDropdown(countryName),
+                            countryName + " is not in list of shipping countries");
+                }
+            }
+        }
+        softAssert.assertAll();
+    }
+
+    @Test(groups = TestGroups.GUEST_OK,
+        description = "There is at least one row in the shipping tab table")
+    public void testOneRowInShippingTab() {
+        Actions actions = new Actions(driver);
+        actions.moveToElement(viPage.getTabPanel());
+        viPage.toggleShippingTab();
+
+        int rows = viPage.getShippingTableNumberOfRows();
+        TestNgLogger.log("number of rows in table: " + rows);
+        assertTrue("number of rows must be >= 1", rows >= 1);
+    }
+
+    @Test(groups = TestGroups.GUEST_OK,
+        description = "Negative test cases for the quantity textbox")
+    public void testQuantityInputNegativeScenarios() {
+        List<String> negativeInput = Arrays.asList(" 1", "1 ", "", "1.0", "abc");
+        ViewItemTestHelper.setQuantityNegativeTestCases(viPage,
+                ViewItemPage.SELECTOR_QUANTITY_INPUT, ViewItemPage.SELECTOR_QUANTITY_ERROR_BOX,
+                negativeInput);
+    }
+
+    @Test(groups = TestGroups.GUEST_OK,
+        description = "Negative test cases for the quantity textbox in the shipping tab")
+    public void testQuantityInputInShippingTabNegativeScenarios() {
+        viPage.goToShippingTab();
+        List<String> negativeInput = Arrays.asList(" 1", "1 ", "", "1.0", "abc");
+        ViewItemTestHelper.setQuantityNegativeTestCases(viPage,
+                ViewItemPage.SELECTOR_SHIPPING_QUANTITY_INPUT,
+                ViewItemPage.SELECTOR_QUANTITY_ERROR_BOX_SHIPPING_TAB,
+                negativeInput);
+    }
+
+    @Test(groups = TestGroups.GUEST_OK,
+        description = "Selected country is displayed in shipping table")
+    public void testSelectedCountryInShippingTable() {
+        viPage.goToShippingTab();
+        List<CountryDropdownChoices> choices = Arrays.asList(
+                CountryDropdownChoices.UK, CountryDropdownChoices.AU);
+        for (CountryDropdownChoices choice : choices) {
+            String countryName = choice.getDisplayName();
+            boolean success = viPage.selectCountryAndEnter(countryName);
+            if (success) {
+                viPage.goToShippingTab();
+                TestNgLogger.log("Entered rate for " + countryName);
+                List<String> columnValues = viPage.getColumnValuesOfShippingTable("To");
+                for (String columnValue : columnValues) {
+                    TestNgLogger.log("Cell value: " + columnValue);
+                    assertEquals("cell value must be equal to country name " + countryName,
+                            countryName, columnValue);
+                }
+            }
+        }
+    }
+
+    @Test(groups = TestGroups.GUEST_OK,
+        description = "Test that the description and shipping tabs are named correctly")
+    public void testShippingTabsNamedCorrectly() {
+        List<WebElement> linkElements = viPage.getTabLinkElements();
+        assertEquals("there should be two tabs", 2, linkElements.size());
+        assertEquals("Description", linkElements.get(0).getText());
+        assertEquals("Shipping and payments", linkElements.get(1).getText());
+    }
+
+    @Test(groups = TestGroups.GUEST_OK,
+        description = "The tab buttons on the shipping pane should be focusable")
+    public void testTabButtonsFocusable() {
+        List<WebElement> linkElements = viPage.getTabLinkElements();
+        for (WebElement linkElement : linkElements) {
+            boolean isFocusable = viPage.focusable(linkElement);
+            assertTrue("The link element " + linkElement.getText() + " should be focusable",
+                    isFocusable);
+        }
+    }
+
+    @Test(groups = TestGroups.GUEST_OK,
+        description = "Check to see if alternative price is listed")
+    public void testAlternativePriceListed() {
+        boolean isDisplayed = viPage.isDisplayed(
+                ViewItemPage.SELECTOR_ALTERNATIVE_PRICE_TEXT);
+        TestNgLogger.log("Is alternative price displayed: " + isDisplayed);
+        if (EbayLocale.US.isInUse()) {
+            assertFalse("For US locale, the alternative price should not be displayed",
+                    isDisplayed);
+        } else {
+            assertTrue("For non-US locale, the alternative price should be displayed",
+                    isDisplayed);
+        }
+    }
+
+    @Test(groups = TestGroups.GUEST_OK,
+        description = "Test to see that the first merchandise panel is displayed")
+    public void testMerchandisePanelAvailable() {
+        Optional<WebElement> firstMerchandisePanel = viPage.getFirstMerchandiseItemsPanel();
+        assertTrue("merchandise panel is not displayed",
+                firstMerchandisePanel.isPresent() && firstMerchandisePanel.get().isDisplayed());
+    }
+
+    private final static String TEST_MERCHANDISE_PANEL_AVAILABLE = "testMerchandisePanelAvailable";
+
+    @Test(groups = TestGroups.GUEST_OK,
+        description = "Check that there are 12 products in the merchandise panel",
+        dependsOnMethods = {TEST_MERCHANDISE_PANEL_AVAILABLE})
+    public void testMerchandisePanel12Items() {
+        Optional<WebElement> firstMerchandisePanel = viPage.getFirstMerchandiseItemsPanel();
+        List<WebElement> itemElements = firstMerchandisePanel.get().findElements(
+                ViewItemPage.SELECTOR_MERCHANDISE_ITEMS);
+        assertEquals("There should be 12 product items in the merchandise panel",
+                12, itemElements.size());
+    }
+
+    @Test(groups = TestGroups.GUEST_OK,
+        description = "Check that we can navigate through merchandise panel (5 elements)",
+        dependsOnMethods = {TEST_MERCHANDISE_PANEL_AVAILABLE})
+    public void testMerchandisePanelNavigate() {
+        // for some reason, this test only works when I have the browser opens
+        Optional<WebElement> webElement = viPage.getFirstMerchandiseItemsPanel();
+        Actions actions = new Actions(driver);
+        actions.moveToElement(webElement.get());
+        ViewItemTestHelper.helperTestItemPanelClickThrough(webElement, viPage);
+    }
+
+    @Test(groups = TestGroups.GUEST_OK,
+        description = "Check that the product of each merchandise panel contains correct info",
+        dependsOnMethods = {TEST_MERCHANDISE_PANEL_AVAILABLE})
+    public void testMerchandisePanelProductInfo() {
+        Optional<WebElement> webElement = viPage.getFirstMerchandiseItemsPanel();
+        List<WebElement> itemElements = webElement.get().findElements(
+                ViewItemPage.SELECTOR_MERCHANDISE_ITEMS);
+        for (WebElement itemElement : itemElements) {
+            Optional<WebElement> product = viPage.getElementOptional(ViewItemPage.SELECTOR_MERCHANDISE_PRODUCT_TITLE);
+            assertTrue("product element must be present", product.isPresent());
+
+            Optional<WebElement> condition = viPage.getElementOptional(ViewItemPage.SELECTOR_MERCHANDISE_PRODUCT_CONDITION);
+            assertTrue("condition element must be present", condition.isPresent());
+
+            Optional<WebElement> price = viPage.getElementOptional(ViewItemPage.SELECTOR_MERCHANDISE_PRODUCT_PRICE);
+            assertTrue("price element must be present", price.isPresent());
         }
     }
 

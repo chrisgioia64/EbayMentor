@@ -7,13 +7,11 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class ViewItemPage extends EbayPage {
 
@@ -29,6 +27,7 @@ public class ViewItemPage extends EbayPage {
     public static final String SELECTOR_NUM_AVAILABLE = "#qtySubTxt";
     public static final By SELECTOR_QUANTITY_ERROR_BOX = By.cssSelector("#qtyErrMsg div");
     public static final String SELECTOR_PRICE_TEXT = "#prcIsum";
+    public static final By SELECTOR_ALTERNATIVE_PRICE_TEXT = By.cssSelector("#prcIsumConv");
     public static final String SELECTOR_PRODUCT_RATINGS_TEXT = "#_rvwlnk";
 
     // Three main buttons
@@ -65,7 +64,11 @@ public class ViewItemPage extends EbayPage {
     private static final By SELECTOR_MERCHANDISE_PANEL = By.cssSelector(".merch-module");
     private static final By SELECTOR_MERCHANDISE_PANEL_TITLE = By.cssSelector(".merch-title");
     private static final By SELECTOR_MERCHANDISE_BUTTON = By.cssSelector(".carousel__control");
-    private static final By SELECTOR_MERCHANDISE_ITEMS = By.cssSelector(".carousel__viewport li");
+    public static final By SELECTOR_MERCHANDISE_ITEMS = By.cssSelector(".carousel__viewport li");
+
+    public static final By SELECTOR_MERCHANDISE_PRODUCT_TITLE = By.cssSelector(".item-info__title");
+    public static final By SELECTOR_MERCHANDISE_PRODUCT_CONDITION = By.cssSelector(".group_2_slots");
+    public static final By SELECTOR_MERCHANDISE_PRODUCT_PRICE = By.cssSelector(".item-info__price");
 
     public static final String TITLE_SIMILAR_SPONSORED_ITEMS = "Similar sponsored items";
     public static final String TITLE_SPONSORED_ITEMS_RECENT = "Sponsored items based on your recent views";
@@ -77,6 +80,8 @@ public class ViewItemPage extends EbayPage {
             = By.cssSelector("#BottomPanelDF .tabbable .nav li:nth-child(1)");
     public static final By SELECTOR_SHIPPING_TAB_BUTTON
             = By.cssSelector("#BottomPanelDF .tabbable .nav li:nth-child(2)");
+    public static final By SELECTOR_TAB_LINKS
+            = By.cssSelector("#BottomPanelDF .tabbable ul.nav a");
     public static final By SELECTOR_DESCRIPTION_PANE
             = By.cssSelector("#BottomPanelDF .tabbable .tab-content-m .tab-pane:nth-child(1)");
     public static final By SELECTOR_SHIPPING_PANE
@@ -85,6 +90,14 @@ public class ViewItemPage extends EbayPage {
     public static final By SELECTOR_ZIP_CODE_INPUT = By.cssSelector("#shZipCode");
     public static final By SELECTOR_SHIPPING_QUANTITY_INPUT = By.cssSelector("#shQuantity");
     public static final By SELECTOR_QUANTITY_ERROR_BOX_SHIPPING_TAB = By.cssSelector("#shQuantity-errTxt");
+    public static final By SELECTOR_GET_RATE_BUTTON = By.cssSelector("#shGetRates");
+
+    public static final By SELECTOR_SHIPS_TO_TEXT = By.cssSelector("#shipsToTab #sh-gsp-wrap");
+    public static final By SELECTOR_SHIPS_DIVISION = By.cssSelector(".sh-sLoc");
+    public static final By SELECTOR_SHIPPING_TABLE_TBODY = By.cssSelector("#shippingSection .sh-tbl tbody");
+    public static final By SELECTOR_SHIPPING_TABLE_THEAD = By.cssSelector("#shippingSection .sh-tbl thead");
+
+    public static final String SELECT_DEFAULT_OPTION = "-Select-";
 
     // The Web Element inside the popup that happens when clicking "Add to Cart"
     private final static By SELECTOR_INSIDE_POPUP_ADD_TO_CART_LINK
@@ -92,6 +105,118 @@ public class ViewItemPage extends EbayPage {
 
     public ViewItemPage(WebDriver driver) {
         super(driver);
+    }
+
+    public List<WebElement> getTabLinkElements() {
+        return driver.findElements(SELECTOR_TAB_LINKS);
+    }
+
+    public List<String> getColumnValuesOfShippingTable(String columnName) {
+        int colNumber = getColumnNumberOfShippingTable(columnName);
+        if (colNumber == -1) {
+            LOGGER.info("The column name {} does not exist in the shipping table", columnName);
+            return new LinkedList<>();
+        }
+        return getColumnValuesOfShippingTable(colNumber);
+    }
+
+    private int getColumnNumberOfShippingTable(String columnName) {
+        WebElement element = driver.findElement(SELECTOR_SHIPPING_TABLE_THEAD);
+        List<WebElement> colElements = element.findElements(By.tagName("th"));
+        int index = 0;
+        for (WebElement colElement : colElements) {
+            if (colElement.getText().contains(columnName)) {
+                return index;
+            }
+            index++;
+        }
+        return -1;
+    }
+
+    private List<String> getColumnValuesOfShippingTable(int colNumber) {
+        WebElement element = driver.findElement(SELECTOR_SHIPPING_TABLE_TBODY);
+        List<WebElement> rowElements = element.findElements(By.tagName("tr"));
+        List<String> values = new LinkedList<>();
+        for (WebElement rowElement : rowElements) {
+            List<WebElement> tdElements = rowElement.findElements(By.tagName("td"));
+            values.add(tdElements.get(colNumber).getText());
+        }
+        return values;
+    }
+
+    public void goToShippingTab() {
+        Actions actions = new Actions(driver);
+        actions.moveToElement(getTabPanel());
+        scrollDownAndWait(300, 2000);
+        toggleShippingTab();
+    }
+
+    public boolean selectCountryAndEnter(String countryDisplayName) {
+        if (isCountryInDropdown(countryDisplayName)) {
+            selectCountry(countryDisplayName);
+            click(SELECTOR_GET_RATE_BUTTON);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public int getShippingTableNumberOfRows() {
+        WebElement element = driver.findElement(SELECTOR_SHIPPING_TABLE_TBODY);
+        List<WebElement> rowElements = element.findElements(By.tagName("tr"));
+        return rowElements.size();
+    }
+
+    public boolean isCountryInDropdown(String countryDisplayName) {
+        try {
+            selectCountry(countryDisplayName);
+            return true;
+        } catch (NoSuchElementException ex) {
+            return false;
+        }
+    }
+
+    public boolean shippingWorldwide() {
+        List<WebElement> elements = driver.findElement(SELECTOR_SHIPS_TO_TEXT)
+                .findElements(SELECTOR_SHIPS_DIVISION);
+        if (elements.size() == 2) {
+            WebElement element = elements.get(0);
+            String text = element.getText();
+            return text.contains("Worldwide");
+        }
+        return false;
+    }
+
+    public Set<String> countriesShippingTo() {
+        Set<String> countries = new HashSet<>();
+        List<WebElement> elements = driver.findElement(SELECTOR_SHIPS_TO_TEXT)
+                .findElements(SELECTOR_SHIPS_DIVISION);
+        if (elements.size() == 2) {
+            WebElement element = elements.get(0);
+            String text = element.getText();
+            String[] splitText = text.split(":");
+            String[] countriesArray = splitText[1].split(",");
+            for (String country : countriesArray) {
+                countries.add(country.strip());
+            }
+        }
+        return countries;
+    }
+
+    public Set<String> getCountryExcludeList() {
+        Set<String> set = new HashSet<>();
+        List<WebElement> elements = driver.findElement(SELECTOR_SHIPS_TO_TEXT)
+                .findElements(SELECTOR_SHIPS_DIVISION);
+        if (elements.size() == 2) {
+            WebElement excludesDivElement = elements.get(1);
+            String text = excludesDivElement.getText();
+            String[] splitText = text.split(":\\s+");
+            String[] items = splitText[1].split(",");
+            for (String item : items) {
+                set.add(item.strip());
+            }
+        }
+        return set;
     }
 
     public WebElement getQuantityInputInShippingTab() {
@@ -108,6 +233,13 @@ public class ViewItemPage extends EbayPage {
         select.selectByVisibleText(displayedCountry);
     }
 
+    public String getCountryDropdownSelectedOption() {
+        WebElement element = driver.findElement(SELECTOR_COUNTRY_DROPDOWN);
+        Select select = new Select(element);
+        WebElement selectedOption = select.getFirstSelectedOption();
+        return selectedOption.getText();
+    }
+
     public boolean isZipCodeInputDisplayed() {
         return isDisplayed(SELECTOR_ZIP_CODE_INPUT);
     }
@@ -118,6 +250,14 @@ public class ViewItemPage extends EbayPage {
 
     public Optional<WebElement> getQuantityInputInShippingTabElement() {
         return driver.findElements(SELECTOR_SHIPPING_QUANTITY_INPUT).stream().findFirst();
+    }
+
+    public Optional<WebElement> getCountryDropdownElement() {
+        return driver.findElements(SELECTOR_COUNTRY_DROPDOWN).stream().findFirst();
+    }
+
+    public Optional<WebElement> getZipCodeInputElement() {
+        return driver.findElements(SELECTOR_ZIP_CODE_INPUT).stream().findFirst();
     }
 
     public WebElement getTabPanel() {
@@ -158,14 +298,14 @@ public class ViewItemPage extends EbayPage {
         int index = 0;
         for (WebElement element : elements) {
             String attributeValue = element.getAttribute("aria-hidden");
+//            LOGGER.info("attribute value: {}", attributeValue);
             if (attributeValue == null) {
                 count++;
                 items.add(index);
             }
-//            LOGGER.info(attributeValue);
             index++;
         }
-        LOGGER.info("Items visible: " + items.toString());
+//        LOGGER.info("Items visible: " + items.toString());
         return count;
     }
 
@@ -190,6 +330,10 @@ public class ViewItemPage extends EbayPage {
     public List<WebElement> getProductItemsFromImagePanel(WebElement imageElement) {
         List<WebElement> list = imageElement.findElements(SELECTOR_MERCHANDISE_ITEMS);
         return list;
+    }
+
+    public Optional<WebElement> getFirstMerchandiseItemsPanel() {
+        return driver.findElements(SELECTOR_MERCHANDISE_PANEL).stream().findFirst();
     }
 
     public Optional<WebElement> getMerchandiseItemsPanel(String title) {

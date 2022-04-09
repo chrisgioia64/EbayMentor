@@ -12,7 +12,13 @@ import java.util.Properties;
  */
 public class LocaleProperties {
 
+    /** The locale as a two-letter abbreviation. */
+    public final static String KEY_LOCALE = "locale";
+
+    /** The base url of the locale (e.g. "www.ebay.com" for us). */
     public final static String KEY_URL = "url";
+
+    /** The page title of the home page. */
     public final static String KEY_TITLE = "title";
 
     private Properties prop;

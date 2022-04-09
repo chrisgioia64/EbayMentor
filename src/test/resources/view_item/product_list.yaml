@@ -20,3 +20,17 @@ products:
     sellerName: "zuber"
     price: 28.95
     included: false
+  - itemId: 275048135425
+    note: "Java HF with no quantity box and 2 images"
+    productTitle: "Head First Java, Second Edition Paperback"
+    condition: "Very Good"
+    sellerName: "noetics-64"
+    price: 29.99
+    included: false
+  - itemId: 274372656125
+    note: "Java HF -- item out of stock"
+    productTitle: "Head First Java, 2nd Edition - Paperback By Sierra, Kathy - GOOD"
+    condition: "Good"
+    sellerName: "second.sale"
+    price: 8.31
+    included: false
