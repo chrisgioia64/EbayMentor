@@ -24,9 +24,9 @@ public class BaseTest {
         );
     }
 
-    public WebDriver getWebDriver(boolean loadUrl) {
+    public WebDriver getWebDriver(boolean loadUrl, boolean newDriver) {
         BrowserType type = EnvironmentProperties.getInstance().getBrowser();
-        WebDriver driver = DriverFactory.getInstance().getWebdriver(type);
+        WebDriver driver = DriverFactory.getInstance().getWebdriver(type, newDriver);
         if (loadUrl) {
             driver.get(URL);
         }
@@ -35,7 +35,11 @@ public class BaseTest {
     }
 
     public WebDriver getWebDriver() {
-        return getWebDriver(true);
+        return getWebDriver(true, false);
+    }
+
+    public void quitDriver(WebDriver driver) {
+        driver.quit();
     }
 
     @AfterSuite

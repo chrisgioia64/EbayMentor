@@ -41,13 +41,26 @@ public class DriverFactory {
         return DRIVER_DIR + "/" + baseName;
     }
 
-    public WebDriver getWebdriver(BrowserType type) {
-        WebDriver driver = singleThreadMap.get(type);
-        if (driver == null) {
-            driver = createWebdriver(type);
-            singleThreadMap.put(type, driver);
+    /**
+     *
+     * @param type
+     * @param newDriver
+     *      true -- do not associate a thread with a driver. instead, create a new driver
+     *          on each invocation
+     * @return
+     */
+    public WebDriver getWebdriver(BrowserType type, boolean newDriver) {
+        if (newDriver) {
+            WebDriver driver = createWebdriver(type);
+            return driver;
+        } else {
+            WebDriver driver = singleThreadMap.get(type);
+            if (driver == null) {
+                driver = createWebdriver(type);
+                singleThreadMap.put(type, driver);
+            }
+            return driver;
         }
-        return driver;
     }
 
     private WebDriver createWebdriver(BrowserType type) {
