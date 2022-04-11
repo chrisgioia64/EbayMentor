@@ -318,80 +318,6 @@ public class ViewItemTest extends BaseTest implements ITest {
         }
     }
 
-    /**
-     * Tests that the "Similar sponsored items" image panel is displayed
-     * on startup of the VI page.
-     * This seems to only be the case for "US" locale.
-     * "UK" locale is treated differently.
-     */
-    @Test(groups=TestGroups.GUEST_OK,
-        description = "Similar sponsored items panel is displayed on startup",
-        enabled = false)
-    public void testSimilarSponsoredItemsAvailable() {
-        viPage.scrollDownAndWait(900, 4000);
-
-        LOGGER.info("Searching for {}", ViewItemPage.TITLE_SIMILAR_SPONSORED_ITEMS);
-        Optional<WebElement> element = viPage.getSimilarSponsoredItemsPanel();
-        assertTrue("Similar sponsored items panel must be present",
-                element.isPresent());
-        assertTrue("Similar sponsored items panel must be displayed",
-                element.get().isDisplayed());
-    }
-
-    /**
-     * Tests that the "Sponsored items based on your recent views" image panel is not initially
-     * present nor displayed, but when scrolling down the page, the image panel
-     * becomes present and displayed
-     */
-    @Test(groups=TestGroups.GUEST_OK,
-            description = "Recent views panel is displayed when scrolling down",
-            enabled = false)
-    public void testSponsoredItemsRecentView() {
-        LOGGER.info("Searching for {}", ViewItemPage.TITLE_SPONSORED_ITEMS_RECENT);
-
-        Optional<WebElement> element = viPage.getSponsoredRecentItemPanel();
-        assertFalse("Panel should not be present", element.isPresent());
-        for (int i = 0; i < 5; i++) {
-            viPage.scrollDownAndWait(1000, 1000);
-        }
-
-        LOGGER.info("After scrolling down");
-        element = viPage.getSponsoredRecentItemPanel();
-        assertTrue("Panel should be present", element.isPresent());
-        assertTrue("Panel should be displayed", element.get().isDisplayed());
-    }
-
-    /**
-     * Tests that we can navigate through the image panel for
-     * "Similar sponsored items"
-     */
-    @Test(groups=TestGroups.GUEST_OK,
-        description = "Can navigate through 'Similar sponsored items' panel",
-        enabled = false)
-    public void testSimilarSponsoredItemsNavigate() {
-        viPage.scrollDownAndWait(900, 4000);
-        Optional<WebElement> webElement = viPage.getSimilarSponsoredItemsPanel();
-        ViewItemTestHelper.helperTestItemPanelClickThrough(webElement, viPage);
-    }
-
-    /**
-     * Tests that we can navigate through the image panel for
-     * "Sponsored items based on your recent views"
-     */
-    @Test(groups=TestGroups.GUEST_OK,
-        description = "Can navigate through 'recent views' panel",
-        enabled = false)
-    public void testSponsoredItemsRecentViewsNavigate() {
-        viPage.scrollDownAndWait(2000, 2000);
-        viPage.scrollDownAndWait(2000, 2000);
-        TestNgLogger.log("Testing that we can navigate through the image panel for " +
-                "'Sponsored items based on your recent views'");
-
-        Optional<WebElement> webElement = viPage.getSponsoredRecentItemPanel();
-        ViewItemTestHelper.helperTestItemPanelClickThrough(webElement, viPage);
-    }
-
-
     @Test(groups = TestGroups.GUEST_OK,
         description = "Item number displays correctly under 'Description' pane")
     public void testItemNumberDisplay() {
@@ -720,7 +646,7 @@ public class ViewItemTest extends BaseTest implements ITest {
 
     @Test(groups = TestGroups.GUEST_OK,
         description = "Check that the product of each merchandise panel contains correct info",
-        dependsOnMethods = {TEST_MERCHANDISE_PANEL_AVAILABLE})
+        dependsOnMethods = {TEST_MERCHANDISE_PANEL_AVAILABtLE})
     public void testMerchandisePanelProductInfo() {
         Optional<WebElement> webElement = viPage.getFirstMerchandiseItemsPanel();
         List<WebElement> itemElements = webElement.get().findElements(
