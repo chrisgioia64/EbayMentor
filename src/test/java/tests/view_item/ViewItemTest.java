@@ -55,7 +55,7 @@ public class ViewItemTest extends BaseTest implements ITest {
 
     @BeforeMethod
     public void setup(ITestResult result) {
-        driver = getWebDriver(false);
+        driver = getWebDriver(false, false);
         viPage = ViewItemTestHelper.navigateToPage(driver, itemId);
         watchlistPage = new WatchlistPage(driver);
         sellerPage = new SellerPage(driver);
@@ -87,6 +87,8 @@ public class ViewItemTest extends BaseTest implements ITest {
     @Test(groups = TestGroups.GUEST_OK,
         description = "The number of watchers should be >= 0")
     public void testNumberWatchersNonnegative() {
+        Optional<WebElement> numWatcherElement = viPage.getNumWatchersElement();
+        assertTrue("Num watcher element must be present", numWatcherElement.isPresent());
         assertTrue("The number of watchers should be non-negative",
                 viPage.getNumWatchers() >= 0);
     }
@@ -646,7 +648,7 @@ public class ViewItemTest extends BaseTest implements ITest {
 
     @Test(groups = TestGroups.GUEST_OK,
         description = "Check that the product of each merchandise panel contains correct info",
-        dependsOnMethods = {TEST_MERCHANDISE_PANEL_AVAILABtLE})
+        dependsOnMethods = {TEST_MERCHANDISE_PANEL_AVAILABLE})
     public void testMerchandisePanelProductInfo() {
         Optional<WebElement> webElement = viPage.getFirstMerchandiseItemsPanel();
         List<WebElement> itemElements = webElement.get().findElements(

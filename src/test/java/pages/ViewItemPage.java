@@ -37,6 +37,8 @@ public class ViewItemPage extends EbayPage {
     public static final String SELECTOR_WATCHING = "#vi-atl-lnk-99";
 
     public static final String SELECTOR_NUM_WATCHERS = "#why2buy .w2b-cnt:nth-child(3)";
+    public static final String SELECTOR_WATCHER_PANEL = "#why2buy .w2b-cnt";
+
 
     // Seller Information
     public static final String SELECTOR_SELLER_LINK = ".ux-seller-section__item:nth-child(1) a";
@@ -469,12 +471,27 @@ public class ViewItemPage extends EbayPage {
         click(SELECTOR_WATCHING);
     }
 
-    private String getNumWatchersString() {
-        return getText(SELECTOR_NUM_WATCHERS);
+//    private String getNumWatchersString() {
+//        return getText(SELECTOR_NUM_WATCHERS);
+//    }
+
+    public Optional<WebElement> getNumWatchersElement() {
+        List<WebElement> elements = driver.findElements(By.cssSelector(SELECTOR_WATCHER_PANEL));
+        for (WebElement element : elements) {
+            if (element.getText().contains("watcher")) {
+                return Optional.of(element);
+            }
+        }
+        return Optional.empty();
     }
 
     public int getNumWatchers() {
-        String text = getNumWatchersString();
+        Optional<WebElement> element = getNumWatchersElement();
+        if (element.isEmpty()) {
+            LOGGER.warn("The number of watcher element is not present");
+            return -1;
+        }
+        String text = element.get().getText();
         String[] ary = text.split("\\s+");
         if (ary.length != 2) {
             LOGGER.warn("Could not parse num watchers string {}", text);
