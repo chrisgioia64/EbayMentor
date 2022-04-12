@@ -2,7 +2,7 @@ package tests;
 
 import base.BaseTest;
 import base.EnvironmentProperties;
-import base.LocaleProperties;
+import base.locale.LocaleProperties;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.Test;
 

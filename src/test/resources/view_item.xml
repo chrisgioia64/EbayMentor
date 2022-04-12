@@ -28,12 +28,12 @@
 <!--                    <include name="testImageNavigate" />-->
 <!--                    <include name="testProductRatingsSectionAvailable" />-->
 
-                    <include name="testItemNumberDisplay" />
-                    <include name="testToggleTabs" />
-                    <include name="testQuantityInShippingTab" />
-                    <include name="testCountryDropdownVisible" />
-                    <include name="testZipCodeToggle" />
-                    <include name="testSetQuantityInputInShippingTab" />
+<!--                    <include name="testItemNumberDisplay" />-->
+<!--                    <include name="testToggleTabs" />-->
+<!--                    <include name="testQuantityInShippingTab" />-->
+<!--                    <include name="testCountryDropdownVisible" />-->
+<!--                    <include name="testZipCodeToggle" />-->
+<!--                    <include name="testSetQuantityInputInShippingTab" />-->
 
 <!--                    <include name="testQuantityInputFocusable" />-->
 <!--                    <include name="testQuantityBoxInputInShippingTabFocusable" />-->
@@ -41,6 +41,7 @@
 <!--                    <include name="testZipCodeInputFocusable" />-->
 <!--                    <include name="testCountryDropdownValuesMatchText" />-->
 <!--                    <include name="testOneRowInShippingTab" />-->
+
 <!--                    <include name="testQuantityInputNegativeScenarios" />-->
 <!--                    <include name="testQuantityInputInShippingTabNegativeScenarios" />-->
 <!--                    <include name="testSelectedCountryInShippingTable" />-->
@@ -48,10 +49,10 @@
 <!--                    <include name="testTabButtonsFocusable" />-->
 <!--                    <include name="testAlternativePriceListed" />-->
 
-<!--                    <include name="testMerchandisePanelAvailable" />-->
-<!--                    <include name="testMerchandisePanel12Items" />-->
-<!--                    <include name="testMerchandisePanelNavigate" />-->
-<!--                    <include name="testMerchandisePanelProductInfo" />-->
+                    <include name="testMerchandisePanelAvailable" />
+                    <include name="testMerchandisePanel12Items" />
+                    <include name="testMerchandisePanelNavigate" />
+                    <include name="testMerchandisePanelProductInfo" />
 
                 </methods>
             </class>

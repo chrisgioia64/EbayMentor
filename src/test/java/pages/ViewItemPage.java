@@ -1,9 +1,9 @@
 package pages;
 
 import base.CustomUtilities;
-import base.EbayLocale;
+import base.locale.EbayLocale;
 import base.EnvironmentProperties;
-import base.LocaleProperties;
+import base.locale.LocaleProperties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
@@ -11,7 +11,6 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 
 import java.util.*;
@@ -157,7 +156,7 @@ public class ViewItemPage extends EbayPage {
     public static final By SELECTOR_QUANTITY_ERROR_BOX_SHIPPING_TAB = By.cssSelector("#shQuantity-errTxt");
     public static final By SELECTOR_GET_RATE_BUTTON = By.cssSelector("#shGetRates");
 
-    public static final By SELECTOR_SHIPS_TO_TEXT = By.cssSelector("#shipsToTab #sh-gsp-wrap");
+    public static final By SELECTOR_SHIPS_TO_TEXT = By.cssSelector("#shipsToTab");
     public static final By SELECTOR_SHIPS_DIVISION = By.cssSelector(".sh-sLoc");
     public static final By SELECTOR_SHIPPING_TABLE_TBODY = By.cssSelector("#shippingSection .sh-tbl tbody");
     public static final By SELECTOR_SHIPPING_TABLE_THEAD = By.cssSelector("#shippingSection .sh-tbl thead");
@@ -247,7 +246,9 @@ public class ViewItemPage extends EbayPage {
         if (elements.size() == 2) {
             WebElement element = elements.get(0);
             String text = element.getText();
-            return text.contains("Worldwide");
+            String worldwideText = EnvironmentProperties.getInstance().getLocaleProperties().getProperty(
+                    LocaleProperties.KEY_TEXT_WORLDWIDE);
+            return text.contains(worldwideText);
         }
         return false;
     }
@@ -399,7 +400,14 @@ public class ViewItemPage extends EbayPage {
     }
 
     public Optional<WebElement> getFirstMerchandiseItemsPanel() {
-        return driver.findElements(SELECTOR_MERCHANDISE_PANEL).stream().findFirst();
+        // Ignore the panel with class name "merch-module-MOT" which appears in non-US locale
+        // and shows up near the top of the page
+        return driver.findElements(SELECTOR_MERCHANDISE_PANEL).stream()
+                .filter(x -> !x.getAttribute("class").contains("MOT")).findFirst();
+    }
+
+    public Optional<WebElement> getMerchandiseTitlePanel(WebElement element) {
+        return element.findElements(SELECTOR_MERCHANDISE_PANEL_TITLE).stream().findFirst();
     }
 
     public Optional<WebElement> getMerchandiseItemsPanel(String title) {

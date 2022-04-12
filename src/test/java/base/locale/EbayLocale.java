@@ -1,4 +1,6 @@
-package base;
+package base.locale;
+
+import base.EnvironmentProperties;
 
 public enum EbayLocale {
 

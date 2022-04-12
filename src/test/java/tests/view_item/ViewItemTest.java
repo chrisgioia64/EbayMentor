@@ -1,14 +1,14 @@
 package tests.view_item;
 
 import base.*;
+import base.locale.EbayLocale;
+import base.locale.LocaleProperties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.ITest;
-import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.SkipException;
 import org.testng.annotations.*;
@@ -409,10 +409,12 @@ public class ViewItemTest extends BaseTest implements ITest {
         viPage.scrollDownAndWait(200, 2000);
         viPage.toggleShippingTab();
 
-        viPage.selectCountry("-Select-");
+        String selectText = EnvironmentProperties.getInstance().getLocaleProperties()
+                .getProperty(LocaleProperties.KEY_TEXT_SELECT);
+        viPage.selectCountry(selectText);
         assertFalse("Zip code input should not be displayed", viPage.isZipCodeInputDisplayed());
 
-        viPage.selectCountry("United States");
+        viPage.selectCountry(Country.US.getLocaleName());
         assertTrue("Zip code input should be displayed", viPage.isZipCodeInputDisplayed());
     }
 
@@ -478,7 +480,7 @@ public class ViewItemTest extends BaseTest implements ITest {
             Actions actions = new Actions(driver);
             actions.moveToElement(viPage.getTabPanel());
             viPage.toggleShippingTab();
-            viPage.selectCountry(CountryDropdownChoices.US.getDisplayName());
+            viPage.selectCountry(Country.US.getLocaleName());
             if (zipCode.get().isDisplayed()) {
                 assertTrue("Zip code should be focusable",
                         viPage.focusable(zipCode.get()));
@@ -500,27 +502,32 @@ public class ViewItemTest extends BaseTest implements ITest {
         SoftAssert softAssert = new SoftAssert();
         Set<String> excludedCountries = viPage.getCountryExcludeList();
         boolean shippingWorldwide = viPage.shippingWorldwide();
+        TestNgLogger.log("Worldwide: " + shippingWorldwide);
         Set<String> countriesShippingTo = viPage.countriesShippingTo();
 
         if (shippingWorldwide) {
-            for (CountryDropdownChoices country : CountryDropdownChoices.values()) {
-                String countryName = country.getDisplayName();
+            for (Country country : Country.values()) {
+                String countryName = country.getLocaleName();
                 if (excludedCountries.contains(countryName)) {
+                    TestNgLogger.log("Excluded country: " + countryName);
                     softAssert.assertFalse(viPage.isCountryInDropdown(countryName),
                             countryName + " is excluded and should not be in dropdown");
                 } else {
+                    TestNgLogger.log("Included country: " + countryName);
                     softAssert.assertTrue(viPage.isCountryInDropdown(countryName),
                             "worldwide shipping: " + countryName
                                     + " is not excluded and should be in dropdown");
                 }
             }
         } else {
-            for (CountryDropdownChoices country : CountryDropdownChoices.values()) {
-                String countryName = country.getDisplayName();
+            for (Country country : Country.values()) {
+                String countryName = country.getLocaleName();
                 if (countriesShippingTo.contains(countryName)) {
+                    TestNgLogger.log("Included country: " + countryName);
                     softAssert.assertTrue(viPage.isCountryInDropdown(countryName),
                             countryName + " is in list of shipping countries");
                 } else {
+                    TestNgLogger.log("Excluded country: " + countryName);
                     softAssert.assertFalse(viPage.isCountryInDropdown(countryName),
                             countryName + " is not in list of shipping countries");
                 }
@@ -565,11 +572,14 @@ public class ViewItemTest extends BaseTest implements ITest {
         description = "Selected country is displayed in shipping table")
     public void testSelectedCountryInShippingTable() {
         viPage.goToShippingTab();
-        List<CountryDropdownChoices> choices = Arrays.asList(
-                CountryDropdownChoices.UK, CountryDropdownChoices.AU);
-        for (CountryDropdownChoices choice : choices) {
-            String countryName = choice.getDisplayName();
+        List<Country> choices = Arrays.asList(
+                Country.UK, Country.AU, Country.US);
+        for (Country choice : choices) {
+            String countryName = choice.getLocaleName();
             boolean success = viPage.selectCountryAndEnter(countryName);
+            CustomUtilities.sleep(2000);
+            viPage.scrollDownAndWait(-4000, 2000);
+//            CustomUtilities.sleep(2000);
             if (success) {
                 viPage.goToShippingTab();
                 TestNgLogger.log("Entered rate for " + countryName);
@@ -588,8 +598,10 @@ public class ViewItemTest extends BaseTest implements ITest {
     public void testShippingTabsNamedCorrectly() {
         List<WebElement> linkElements = viPage.getTabLinkElements();
         assertEquals("there should be two tabs", 2, linkElements.size());
-        assertEquals("Description", linkElements.get(0).getText());
-        assertEquals("Shipping and payments", linkElements.get(1).getText());
+        String tab1 = EnvironmentProperties.getInstance().getLocaleProperties().getProperty(LocaleProperties.KEY_TAB_DESCRIPTION);
+        assertEquals(tab1, linkElements.get(0).getText());
+        String tab2 = EnvironmentProperties.getInstance().getLocaleProperties().getProperty(LocaleProperties.KEY_TAB_SHIPPING);
+        assertEquals(tab2, linkElements.get(1).getText());
     }
 
     @Test(groups = TestGroups.GUEST_OK,
@@ -633,6 +645,8 @@ public class ViewItemTest extends BaseTest implements ITest {
         dependsOnMethods = {TEST_MERCHANDISE_PANEL_AVAILABLE})
     public void testMerchandisePanel12Items() {
         Optional<WebElement> firstMerchandisePanel = viPage.getFirstMerchandiseItemsPanel();
+        Optional<WebElement> title = viPage.getMerchandiseTitlePanel(firstMerchandisePanel.get());
+        TestNgLogger.log("Title: " + title.get().getText());
         List<WebElement> itemElements = firstMerchandisePanel.get().findElements(
                 ViewItemPage.SELECTOR_MERCHANDISE_ITEMS);
         assertEquals("There should be 12 product items in the merchandise panel",

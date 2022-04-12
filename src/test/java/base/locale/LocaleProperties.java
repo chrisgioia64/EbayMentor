@@ -1,4 +1,4 @@
-package base;
+package base.locale;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,6 +26,19 @@ public class LocaleProperties {
 
     public final static String KEY_TEXT_WATCHER = "watcher_text";
 
+    public final static String KEY_COUNTRY_PREFIX = "country_";
+
+    /** The display text of the country dropdown value where no country is selected. */
+    public final static String KEY_TEXT_SELECT = "select_text";
+
+    /** The display text of "Worldwide" when the shipping is to all countries.
+     *  Varies based on language. */
+    public final static String KEY_TEXT_WORLDWIDE = "worldwide_text";
+
+    public final static String KEY_TAB_DESCRIPTION = "tab_description";
+    public final static String KEY_TAB_SHIPPING = "tab_shipping";
+
+
     private Properties prop;
     private final static Logger LOGGER = LogManager.getLogger(LocaleProperties.class);
 
@@ -37,6 +50,11 @@ public class LocaleProperties {
             LOGGER.error("Could not load the locale file: " + path);
             e.printStackTrace();
         }
+    }
+
+    public String getCountry(String countryDisplayName) {
+        String key = KEY_COUNTRY_PREFIX + countryDisplayName.replace(" ", "_");
+        return getProperty(key);
     }
 
     public String getProperty(String key) {

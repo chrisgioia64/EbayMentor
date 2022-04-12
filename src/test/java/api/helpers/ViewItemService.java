@@ -2,7 +2,7 @@ package api.helpers;
 
 import api.constants.Endpoints;
 import base.EnvironmentProperties;
-import base.LocaleProperties;
+import base.locale.LocaleProperties;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 
