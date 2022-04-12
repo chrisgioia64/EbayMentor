@@ -3,6 +3,7 @@ package tests.view_item;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class ProductList {
 
@@ -31,10 +32,12 @@ public class ProductList {
         private String itemId;
         /** A note to the developer that helps identify the product. */
         private String note;
-        /** The product title as it appears on the top of the VI page. */
-        private String productTitle;
-        /** The condition of the book (e.g. "Brand New") */
-        private String condition;
+        /** The product title as it appears on the top of the VI page.
+         * Map from language to product title. */
+        private Map<String, String> productTitle;
+        /** The condition of the book (e.g. "Brand New").
+         * Map from locale to condition */
+        private Map<String, String> condition;
         /** The name of the seller. */
         private String sellerName;
         /** The price of the item (in the current currency). */
@@ -58,19 +61,19 @@ public class ProductList {
             this.note = note;
         }
 
-        public String getProductTitle() {
+        public Map<String, String> getProductTitle() {
             return productTitle;
         }
 
-        public void setProductTitle(String productTitle) {
+        public void setProductTitle(Map<String, String> productTitle) {
             this.productTitle = productTitle;
         }
 
-        public String getCondition() {
+        public Map<String, String> getCondition() {
             return condition;
         }
 
-        public void setCondition(String condition) {
+        public void setCondition(Map<String, String> condition) {
             this.condition = condition;
         }
 

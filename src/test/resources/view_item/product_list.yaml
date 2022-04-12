@@ -1,36 +1,61 @@
 products:
   - itemId: 303835193497
     note: "JLPT Set with a single image, and 3 available"
-    productTitle: "JLPT Official 5 books Set , N1 N2 N3 N4 N5 Japanese Language Proficiency Test..."
-    condition: "Brand New"
+    productTitle:
+      english: "JLPT Official 5 books Set , N1 N2 N3 N4 N5 Japanese Language Proficiency Test..."
+      italian: "JLPT ufficiale di 5 LIBRI Set, N1 N2 N3 N4 N5 lingua giapponese prova di idoneità."
+    condition:
+      us: "Brand New"
+      uk: "New"
+      it: "Nuovo"
     sellerName: "supla-us"
     price: 87.95
     included: true
   - itemId: 192238685975
     note: "JLPT N4 with multiple images, and 1 available and product ratings"
-    productTitle: "JLPT N4 Grammar Shin Kanzen Master Japanese Language Proficiency Test Japan"
-    condition: "Brand New"
+    productTitle:
+      english: "JLPT N4 Grammar Shin Kanzen Master Japanese Language Proficiency Test Japan"
+      italian: "JLPT N4 GRAMMATICA Shin Kanzen MASTER LINGUA GIAPPONESE Giappone prova di idoneità"
+    condition:
+      us: "Brand New"
+      uk: "New"
+      it: "Nuovo"
     sellerName: "reckless_yokohama"
     price: 34.99
     included: true
   - itemId: 185297921843
     note: "JLPT N4 with no quantity box"
-    productTitle: "JLPT N4 JAPANESE LAUGUAGE PROFICIENCY TEST OFFICIAL BOOK By Japan Foundation NEW"
-    condition: "Brand New"
+    productTitle:
+      english: "JLPT N4 JAPANESE LAUGUAGE PROFICIENCY TEST OFFICIAL BOOK By Japan Foundation NEW"
+      italian: "JLPT N4 giapponese lauguage prova di idoneità libro ufficiale da parte di Fondazione Giappone NUOVA"
+    condition:
+      us: "Brand New"
+      uk: "New"
+      it: "Nuovo"
     sellerName: "zuber"
     price: 28.95
     included: false
   - itemId: 275048135425
     note: "Java HF with no quantity box and 2 images"
-    productTitle: "Head First Java, Second Edition Paperback"
-    condition: "Very Good"
+    productTitle:
+      english: "Head First Java, Second Edition Paperback"
+      italian: "Head First Java, Seconda edizione Tascabile"
+    condition:
+      us: "Very Good"
+      uk: "Very Good"
+      it: "Ottime condizioni"
     sellerName: "noetics-64"
     price: 29.99
     included: false
   - itemId: 274372656125
     note: "Java HF -- item out of stock"
-    productTitle: "Head First Java, 2nd Edition - Paperback By Sierra, Kathy - GOOD"
-    condition: "Good"
+    productTitle:
+      english: "Head First Java, 2nd Edition - Paperback By Sierra, Kathy - GOOD"
+      italian: "Head First Java, 2nd Edition - Paperback By Sierra, Kathy - GOOD"
+    condition:
+      us: "Good"
+      uk: "Good"
+      it: "Buone condizioni"
     sellerName: "second.sale"
     price: 8.31
     included: false

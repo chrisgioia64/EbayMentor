@@ -1,9 +1,6 @@
 package tests.view_item;
 
-import base.CustomUtilities;
-import base.BaseTest;
-import base.EbayLocale;
-import base.TestNgLogger;
+import base.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
@@ -244,9 +241,16 @@ public class ViewItemTest extends BaseTest implements ITest {
     @Test(groups = TestGroups.GUEST_OK,
         description = "Tests that the product details is displayed correctly")
     public void testProductDetails() {
+        LocaleProperties prop = EnvironmentProperties.getInstance().getLocaleProperties();
+        LOGGER.info("Product title: " + product.getProductTitle());
+        LOGGER.info("Product condition: " + product.getCondition());
+        String locale = prop.getProperty(LocaleProperties.KEY_LOCALE);
+        String language = prop.getProperty(LocaleProperties.KEY_LANGUAGE);
+        LOGGER.info("locale: " + locale);
+        LOGGER.info("language: " + language);
         SoftAssert softAssert = new SoftAssert();
-        softAssert.assertEquals(viPage.getProductTitle(), product.getProductTitle());
-        softAssert.assertEquals(viPage.getBrandText(), product.getCondition());
+        softAssert.assertEquals(viPage.getProductTitle(), product.getProductTitle().get(language));
+        softAssert.assertEquals(viPage.getBrandText(), product.getCondition().get(locale));
         softAssert.assertEquals(viPage.getSellerLinkText(), product.getSellerName());
         softAssert.assertEquals(viPage.getPriceAsDouble(), product.getPrice());
         softAssert.assertAll();

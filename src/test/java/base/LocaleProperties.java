@@ -21,6 +21,9 @@ public class LocaleProperties {
     /** The page title of the home page. */
     public final static String KEY_TITLE = "title";
 
+    /** The language of the locale. */
+    public final static String KEY_LANGUAGE = "language";
+
     private Properties prop;
     private final static Logger LOGGER = LogManager.getLogger(LocaleProperties.class);
 
