@@ -24,6 +24,8 @@ public class LocaleProperties {
     /** The language of the locale. */
     public final static String KEY_LANGUAGE = "language";
 
+    public final static String KEY_TEXT_WATCHER = "watcher_text";
+
     private Properties prop;
     private final static Logger LOGGER = LogManager.getLogger(LocaleProperties.class);
 

@@ -1,6 +1,9 @@
 package pages;
 
 import base.CustomUtilities;
+import base.EbayLocale;
+import base.EnvironmentProperties;
+import base.LocaleProperties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
@@ -50,6 +53,7 @@ public class ViewItemPage extends EbayPage {
 
     // Rating Panel at the bottom of the page
     private static final String SELECTOR_PRODUCT_RATING_DIV = "#review-ratings-cntr";
+    private static final String SELECTOR_PRODUCT_WRITE_REVIEW = "#write-review";
     private static final String SELECTOR_RATING_PANEL = "#rwid";
     private static final String SELECTOR_RATING_PANEL_PRODUCT_RATINGS_TEXT = "#rwid .ebay-reviews-count";
     /** The popup for the ratings. */
@@ -77,17 +81,76 @@ public class ViewItemPage extends EbayPage {
 
     // Tabs -- Description and Shipping
     private static final By SELECTOR_ITEM_DESCRIPTION_DIV = By.cssSelector("#descItemNumber");
-    private static final By SELECTOR_TAB_PANEL = By.cssSelector("#BottomPanelDF .tabbable");
-    public static final By SELECTOR_DESCRIPTION_TAB_BUTTON
-            = By.cssSelector("#BottomPanelDF .tabbable .nav li:nth-child(1)");
-    public static final By SELECTOR_SHIPPING_TAB_BUTTON
-            = By.cssSelector("#BottomPanelDF .tabbable .nav li:nth-child(2)");
-    public static final By SELECTOR_TAB_LINKS
-            = By.cssSelector("#BottomPanelDF .tabbable ul.nav a");
-    public static final By SELECTOR_DESCRIPTION_PANE
-            = By.cssSelector("#BottomPanelDF .tabbable .tab-content-m .tab-pane:nth-child(1)");
-    public static final By SELECTOR_SHIPPING_PANE
-            = By.cssSelector("#BottomPanelDF .tabbable .tab-content-m .tab-pane:nth-child(2)");
+//    private static final By SELECTOR_TAB_PANEL = By.cssSelector("#BottomPanelDF .tabbable");
+//    public static final By SELECTOR_DESCRIPTION_TAB_BUTTON
+//            = By.cssSelector("#BottomPanelDF .tabbable .nav li:nth-child(1)");
+//    public static final By SELECTOR_SHIPPING_TAB_BUTTON
+//            = By.cssSelector("#BottomPanelDF .tabbable .nav li:nth-child(2)");
+//    public static final By SELECTOR_TAB_LINKS
+//            = By.cssSelector("#BottomPanelDF .tabbable ul.nav a");
+//    public static final By SELECTOR_DESCRIPTION_PANE
+//            = By.cssSelector("#BottomPanelDF .tabbable .tab-content-m .tab-pane:nth-child(1)");
+//    public static final By SELECTOR_SHIPPING_PANE
+//            = By.cssSelector("#BottomPanelDF .tabbable .tab-content-m .tab-pane:nth-child(2)");
+
+    /**
+     * The selectors for the "description" and "shipping" tab in the middle of the page
+     * that is customized for the specific locale
+     */
+    public static class DescriptionTabSelectorsLocale {
+        private String mainSelector;
+        private String navigationSelector;
+        private String paneSelector;
+        private int paneOffset;
+
+        public By getSelectorTabPanel() {
+            return By.cssSelector(mainSelector);
+        }
+        public By getDescriptionTabButton() {
+            return By.cssSelector(mainSelector + " " + navigationSelector + ":nth-child(1)");
+        }
+        public By getShippingTabButton() {
+            return By.cssSelector(mainSelector + " " + navigationSelector + ":nth-child(2)");
+        }
+        public By getTabLinks() {
+            return By.cssSelector(mainSelector + " " + navigationSelector);
+        }
+        public By getDescriptionPane() {
+            return By.cssSelector(mainSelector + " " + paneSelector + ":nth-child("
+                    + (paneOffset + 1) + ")");
+        }
+        public By getShippingPane() {
+            return By.cssSelector(mainSelector + " " + paneSelector + ":nth-child(" +
+                    + (paneOffset + 2) + ")");
+        }
+
+    }
+
+    public static DescriptionTabSelectorsLocale TAB_US;
+    public static DescriptionTabSelectorsLocale TAB_UK;
+
+    public DescriptionTabSelectorsLocale getDescriptionTabSelector() {
+        if (EbayLocale.US.isInUse()) {
+            return TAB_US;
+        } else {
+            return TAB_UK;
+        }
+    }
+
+    {
+        TAB_US = new DescriptionTabSelectorsLocale();
+        TAB_US.mainSelector = "#BottomPanelDF .tabbable";
+        TAB_US.navigationSelector = ".nav li";
+        TAB_US.paneSelector = ".tab-content-m .tab-pane";
+        TAB_US.paneOffset = 0;
+
+        TAB_UK = new DescriptionTabSelectorsLocale();
+        TAB_UK.mainSelector = "#viTabs";
+        TAB_UK.navigationSelector = ".tab a";
+        TAB_UK.paneSelector = "div.content";
+        TAB_UK.paneOffset = 1;
+    }
+
     public static final By SELECTOR_COUNTRY_DROPDOWN = By.cssSelector("#shCountry");
     public static final By SELECTOR_ZIP_CODE_INPUT = By.cssSelector("#shZipCode");
     public static final By SELECTOR_SHIPPING_QUANTITY_INPUT = By.cssSelector("#shQuantity");
@@ -110,7 +173,7 @@ public class ViewItemPage extends EbayPage {
     }
 
     public List<WebElement> getTabLinkElements() {
-        return driver.findElements(SELECTOR_TAB_LINKS);
+        return driver.findElements(getDescriptionTabSelector().getTabLinks());
     }
 
     public List<String> getColumnValuesOfShippingTable(String columnName) {
@@ -263,23 +326,23 @@ public class ViewItemPage extends EbayPage {
     }
 
     public WebElement getTabPanel() {
-        return driver.findElement(SELECTOR_TAB_PANEL);
+        return driver.findElement(getDescriptionTabSelector().getSelectorTabPanel());
     }
 
     public void toggleDescriptionTab() {
-        click(SELECTOR_DESCRIPTION_TAB_BUTTON);
+        click(getDescriptionTabSelector().getDescriptionTabButton());
     }
 
     public void toggleShippingTab() {
-        click(SELECTOR_SHIPPING_TAB_BUTTON);
+        click(getDescriptionTabSelector().getShippingTabButton());
     }
 
     public boolean isDescriptionTabDisplayed() {
-        return isDisplayed(SELECTOR_DESCRIPTION_PANE);
+        return isDisplayed(getDescriptionTabSelector().getDescriptionPane());
     }
 
     public boolean isShippingTabDisplayed() {
-        return isDisplayed(SELECTOR_SHIPPING_PANE);
+        return isDisplayed(getDescriptionTabSelector().getShippingPane());
     }
 
     public boolean isCountryDropdownDisplayed() {
@@ -291,7 +354,8 @@ public class ViewItemPage extends EbayPage {
     }
 
     public boolean containsProductRatingAtTop() {
-        return elementExists(SELECTOR_PRODUCT_RATING_DIV);
+        return elementExists(SELECTOR_PRODUCT_RATING_DIV) ||
+                elementExists(SELECTOR_PRODUCT_WRITE_REVIEW);
     }
 
     public int getNumberItemsVisibleInCarousel(List<WebElement> elements) {
@@ -445,6 +509,8 @@ public class ViewItemPage extends EbayPage {
         for (char c : dollar.toCharArray()) {
             if (CustomUtilities.isDigit(c) || c == '.') {
                 b.append(c);
+            } else if (c == ',') {
+                b.append(".");
             }
         }
         try {
@@ -476,9 +542,11 @@ public class ViewItemPage extends EbayPage {
 //    }
 
     public Optional<WebElement> getNumWatchersElement() {
+        String watcherText = EnvironmentProperties.getInstance().getLocaleProperties().getProperty(LocaleProperties.KEY_TEXT_WATCHER);
+
         List<WebElement> elements = driver.findElements(By.cssSelector(SELECTOR_WATCHER_PANEL));
         for (WebElement element : elements) {
-            if (element.getText().contains("watcher")) {
+            if (element.getText().contains(watcherText)) {
                 return Optional.of(element);
             }
         }
