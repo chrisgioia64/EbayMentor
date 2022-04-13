@@ -60,6 +60,7 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <version>2.12.4</version>
                         <configuration>
+                            <reportsDirectory>${basedir}/target/locale/${locale}</reportsDirectory>
                             <systemPropertyVariables>
                                 <env_file>development.properties</env_file>
                             </systemPropertyVariables>
@@ -81,6 +82,7 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <version>2.12.4</version>
                         <configuration>
+                            <reportsDirectory>${basedir}/target/locale/${locale}</reportsDirectory>
                             <systemPropertyVariables>
                                 <env_file>jenkins.properties</env_file>
                             </systemPropertyVariables>
