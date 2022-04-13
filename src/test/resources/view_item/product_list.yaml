@@ -10,7 +10,7 @@ products:
       it: "Nuovo"
     sellerName: "supla-us"
     price: 87.95
-    included: true
+    included: false
   - itemId: 192238685975
     note: "JLPT N4 with multiple images, and 1 available and product ratings"
     productTitle:
@@ -22,9 +22,9 @@ products:
       it: "Nuovo"
     sellerName: "reckless_yokohama"
     price: 34.99
-    included: true
+    included: false
   - itemId: 185297921843
-    note: "JLPT N4 with no quantity box"
+    note: "JLPT N4 with no quantity box and no num watchers"
     productTitle:
       english: "JLPT N4 JAPANESE LAUGUAGE PROFICIENCY TEST OFFICIAL BOOK By Japan Foundation NEW"
       italian: "JLPT N4 giapponese lauguage prova di idoneità libro ufficiale da parte di Fondazione Giappone NUOVA"
@@ -34,7 +34,7 @@ products:
       it: "Nuovo"
     sellerName: "zuber"
     price: 28.95
-    included: false
+    included: true
   - itemId: 275048135425
     note: "Java HF with no quantity box and 2 images"
     productTitle:
