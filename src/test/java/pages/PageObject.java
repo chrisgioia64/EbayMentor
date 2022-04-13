@@ -130,8 +130,12 @@ public abstract class PageObject {
     }
 
     protected boolean elementExists(String cssSelector) {
+        return elementExists(By.cssSelector(cssSelector));
+    }
+
+    protected boolean elementExists(By selector) {
         try {
-            driver.findElement(By.cssSelector(cssSelector));
+            driver.findElement(selector);
             return true;
         } catch (NoSuchElementException ex) {
             return false;

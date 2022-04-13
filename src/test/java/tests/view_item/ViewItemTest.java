@@ -44,22 +44,30 @@ public class ViewItemTest extends BaseTest implements ITest {
     private final String itemId;
     private final static String DATA_PROVIDER_PRODUCT = "product";
 
+    private boolean hasAcceptedCookies = false;
+
     @Factory(dataProvider = DATA_PROVIDER_PRODUCT)
     public ViewItemTest(ProductList.Product product) {
         this.product = product;
         this.itemId = product.getItemId();
+        this.hasAcceptedCookies = false;
     }
 
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public void setup(ITestResult result) {
         driver = getWebDriver(false, false);
         viPage = ViewItemTestHelper.navigateToPage(driver, itemId);
         watchlistPage = new WatchlistPage(driver);
         sellerPage = new SellerPage(driver);
         cartPage = new CartPage(driver);
+        if (!hasAcceptedCookies) {
+            CustomUtilities.sleep(4000);
+            viPage.acceptCookiesIfPrompted();
+            hasAcceptedCookies = true;
+        }
     }
 
-    @AfterMethod
+    @AfterMethod(alwaysRun = true)
     public void teardown() {
         // TODO
     }

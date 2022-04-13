@@ -17,7 +17,7 @@ public class BaseTest {
 
     private static String URL = "";
 
-    @BeforeSuite
+    @BeforeSuite(alwaysRun = true)
     public void setup() {
         URL = EnvironmentProperties.getInstance().getLocaleProperties().getProperty(
                 LocaleProperties.KEY_URL
@@ -42,7 +42,7 @@ public class BaseTest {
         driver.quit();
     }
 
-    @AfterSuite
+    @AfterSuite(alwaysRun = true)
     public void teardown() {
 //        driverPool.forEach(WebDriver::quit);
     }

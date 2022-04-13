@@ -7,8 +7,12 @@
         <listener class-name="base.AnnotationTransformer"/>
         <listener class-name="base.CustomReporter"/>
     </listeners>
-
     <test name="Test">
+        <groups>
+            <run>
+                <include name="guest_ok" />
+            </run>
+        </groups>
         <classes>
             <class name="base.BaseTest">
             </class>

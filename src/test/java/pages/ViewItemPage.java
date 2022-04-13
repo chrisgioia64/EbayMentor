@@ -78,6 +78,9 @@ public class ViewItemPage extends EbayPage {
     public static final String TITLE_SIMILAR_SPONSORED_ITEMS = "Similar sponsored items";
     public static final String TITLE_SPONSORED_ITEMS_RECENT = "Sponsored items based on your recent views";
 
+    // Dialog Popup (for agreeing to use cookies)
+    public static final By BUTTON_ACCEPT_COOKIES = By.cssSelector("#gdpr-banner-accept");
+
     // Tabs -- Description and Shipping
     private static final By SELECTOR_ITEM_DESCRIPTION_DIV = By.cssSelector("#descItemNumber");
 //    private static final By SELECTOR_TAB_PANEL = By.cssSelector("#BottomPanelDF .tabbable");
@@ -169,6 +172,16 @@ public class ViewItemPage extends EbayPage {
 
     public ViewItemPage(WebDriver driver) {
         super(driver);
+    }
+
+    public boolean acceptCookiesIfPrompted() {
+        if (elementExists(BUTTON_ACCEPT_COOKIES)) {
+            click(BUTTON_ACCEPT_COOKIES);
+            LOGGER.info("Clicked on Accept Cookies");
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public List<WebElement> getTabLinkElements() {
