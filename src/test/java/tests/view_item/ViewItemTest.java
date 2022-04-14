@@ -66,6 +66,8 @@ public class ViewItemTest extends BaseTest implements ITest {
             viPage.acceptCookiesIfPrompted();
             hasAcceptedCookies = true;
         }
+        // Give the page time to load
+        CustomUtilities.sleep(2000);
     }
 
     @AfterMethod(alwaysRun = true)
