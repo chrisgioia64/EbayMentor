@@ -38,6 +38,7 @@ public class LocaleProperties {
     public final static String KEY_TAB_DESCRIPTION = "tab_description";
     public final static String KEY_TAB_SHIPPING = "tab_shipping";
 
+    public final static String KEY_TO_COLUMN = "to_column_name";
 
     private Properties prop;
     private final static Logger LOGGER = LogManager.getLogger(LocaleProperties.class);

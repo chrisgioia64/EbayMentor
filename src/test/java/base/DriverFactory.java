@@ -15,12 +15,16 @@ public class DriverFactory {
 
     private static final DriverFactory INSTANCE = new DriverFactory();
 
-    /** The folder that contains the webdrivers such as chromedriver.exe. */
+    /**
+     * The folder that contains the webdrivers such as chromedriver.exe.
+     */
     private static final String DRIVER_DIR = "drivers";
 
     private static final Logger LOGGER = LogManager.getLogger(DriverFactory.class);
 
     private final static Map<BrowserType, WebDriver> singleThreadMap = new HashMap<>();
+
+    private final static ThreadLocal<WebDriver> multiThreadMap = new ThreadLocal<>();
 
     private DriverFactory() {
         initializaLocalProperties();
@@ -32,7 +36,7 @@ public class DriverFactory {
 
     private void initializaLocalProperties() {
         System.setProperty("webdriver.edge.driver", getDriverLocation("msedgedriver.exe"));
-        System.setProperty("webdriver.chrome.driver",getDriverLocation("chromedriver_99.exe"));
+        System.setProperty("webdriver.chrome.driver", getDriverLocation("chromedriver_99.exe"));
         System.setProperty("webdriver.gecko.driver", getDriverLocation("geckodriver.exe"));
         System.setProperty("webdriver.ie.driver", getDriverLocation("IEDriverServer.exe"));
     }
@@ -42,16 +46,17 @@ public class DriverFactory {
     }
 
     /**
-     *
      * @param type
-     * @param newDriver
-     *      true -- do not associate a thread with a driver. instead, create a new driver
-     *          on each invocation
      * @return
      */
-    public WebDriver getWebdriver(BrowserType type, boolean newDriver) {
-        if (newDriver) {
-            WebDriver driver = createWebdriver(type);
+    public WebDriver getWebdriver(BrowserType type) {
+        boolean parallel = EnvironmentProperties.getInstance().isParallel();
+        if (parallel) {
+            WebDriver driver = multiThreadMap.get();
+            if (driver == null) {
+                driver = createWebdriver(type);
+                multiThreadMap.set(driver);
+            }
             return driver;
         } else {
             WebDriver driver = singleThreadMap.get(type);

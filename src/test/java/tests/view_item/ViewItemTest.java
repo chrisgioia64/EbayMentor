@@ -56,7 +56,7 @@ public class ViewItemTest extends BaseTest implements ITest {
 
     @BeforeMethod(alwaysRun = true)
     public void setup(ITestResult result) {
-        driver = getWebDriver(false, false);
+        driver = getWebDriver(false);
         viPage = ViewItemTestHelper.navigateToPage(driver, itemId);
         watchlistPage = new WatchlistPage(driver);
         sellerPage = new SellerPage(driver);
@@ -616,7 +616,9 @@ public class ViewItemTest extends BaseTest implements ITest {
             if (success) {
                 viPage.goToShippingTab();
                 TestNgLogger.log("Entered rate for " + countryName);
-                List<String> columnValues = viPage.getColumnValuesOfShippingTable("To");
+                String toColumnName = EnvironmentProperties.getInstance().getLocaleProperties()
+                        .getProperty(LocaleProperties.KEY_TO_COLUMN);
+                List<String> columnValues = viPage.getColumnValuesOfShippingTable(toColumnName);
                 for (String columnValue : columnValues) {
                     TestNgLogger.log("Cell value: " + columnValue);
                     assertEquals("cell value must be equal to country name " + countryName,

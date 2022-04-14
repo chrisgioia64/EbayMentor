@@ -521,7 +521,13 @@ public class ViewItemPage extends EbayPage {
 
     public double getPriceAsDouble() {
         String text = getPriceText();
-        String[] ary = text.split("\\s+");
+        String[] ary = null;
+        if (EbayLocale.ES.isInUse()) {
+            ary = text.split("USD");
+//            LOGGER.info("Array: " + Arrays.toString(ary));
+        } else {
+            ary = text.split("\\s+");
+        }
         if (ary.length != 2) {
             LOGGER.warn("Could not parse price text {}", text);
         }

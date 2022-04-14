@@ -2,8 +2,9 @@ package base.locale;
 
 public enum EbayLanguage {
 
-    ENGLISH("English"),
-    ITALIAN("Italian");
+    ENGLISH("english"),
+    ITALIAN("italian"),
+    SPANISH("spanish");
 
     private String name;
 

@@ -4,34 +4,40 @@ products:
     productTitle:
       english: "JLPT Official 5 books Set , N1 N2 N3 N4 N5 Japanese Language Proficiency Test..."
       italian: "JLPT ufficiale di 5 LIBRI Set, N1 N2 N3 N4 N5 lingua giapponese prova di idoneità."
+      spanish: "JLPT oficial 5 Libros Set, N1 N2 N3 N4 N5 prueba de habilidad idioma japonés.."
     condition:
       us: "Brand New"
       uk: "New"
       it: "Nuovo"
+      es: "Nuevo"
     sellerName: "supla-us"
     price: 87.95
-    included: false
+    included: true
   - itemId: 192238685975
     note: "JLPT N4 with multiple images, and 1 available and product ratings"
     productTitle:
       english: "JLPT N4 Grammar Shin Kanzen Master Japanese Language Proficiency Test Japan"
       italian: "JLPT N4 GRAMMATICA Shin Kanzen MASTER LINGUA GIAPPONESE Giappone prova di idoneità"
+      spanish: "JLPT N4 gramática Shin Kanzen Master prueba de habilidad Idioma Japonés Japón"
     condition:
       us: "Brand New"
       uk: "New"
       it: "Nuovo"
+      es: "Nuevo"
     sellerName: "reckless_yokohama"
     price: 34.99
-    included: false
+    included: true
   - itemId: 185297921843
     note: "JLPT N4 with no quantity box and no num watchers"
     productTitle:
       english: "JLPT N4 JAPANESE LAUGUAGE PROFICIENCY TEST OFFICIAL BOOK By Japan Foundation NEW"
       italian: "JLPT N4 giapponese lauguage prova di idoneità libro ufficiale da parte di Fondazione Giappone NUOVA"
+      spanish: "Prueba de habilidad JLPT N4 japonés lauguage libro oficial de fundación de Japón Nuevo"
     condition:
       us: "Brand New"
       uk: "New"
       it: "Nuovo"
+      es: "Nuevo"
     sellerName: "zuber"
     price: 28.95
     included: true
@@ -40,10 +46,12 @@ products:
     productTitle:
       english: "Head First Java, Second Edition Paperback"
       italian: "Head First Java, Seconda edizione Tascabile"
+      spanish: "La cabeza primero Java, segunda edición del libro en rústica"
     condition:
       us: "Very Good"
       uk: "Very Good"
       it: "Ottime condizioni"
+      es: "En muy buen estado"
     sellerName: "noetics-64"
     price: 29.99
     included: false
@@ -52,10 +60,12 @@ products:
     productTitle:
       english: "Head First Java, 2nd Edition - Paperback By Sierra, Kathy - GOOD"
       italian: "Head First Java, 2nd Edition - Paperback By Sierra, Kathy - GOOD"
+      spanish: "La cabeza primero Java, 2nd edición-Libro De Bolsillo por Sierra, Kathy-Buen"
     condition:
       us: "Good"
       uk: "Good"
       it: "Buone condizioni"
+      es: "En buen estado"
     sellerName: "second.sale"
     price: 8.31
     included: false

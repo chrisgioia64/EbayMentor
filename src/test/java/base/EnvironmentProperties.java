@@ -22,6 +22,7 @@ public class EnvironmentProperties {
     private static final String KEY_LOCALE = "locale";
     private static final String KEY_USE_EXISTING_BROWSER = "use_existing_browser";
     private static final String KEY_BROWSER_PORT = "port";
+    private static final String KEY_PARALLEL = "parallel";
 
     private LocaleProperties localeProperties;
 
@@ -156,6 +157,10 @@ public class EnvironmentProperties {
 
     public boolean isUseExistingBrowser() {
         return getBooleanFlag(KEY_USE_EXISTING_BROWSER);
+    }
+
+    public boolean isParallel() {
+        return getBooleanFlag(KEY_PARALLEL);
     }
 
     public int getBrowserPort() {

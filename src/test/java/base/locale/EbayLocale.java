@@ -6,7 +6,8 @@ public enum EbayLocale {
 
     US("us", "United States"),
     UK("uk", "United Kingdom"),
-    IT("it", "Italy");
+    IT("it", "Italy"),
+    ES("es", "Spain");
 
     private EbayLocale(String abbreviation, String fullName) {
         this.abbreviation = abbreviation;
