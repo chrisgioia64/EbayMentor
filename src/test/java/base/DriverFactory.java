@@ -50,22 +50,13 @@ public class DriverFactory {
      * @return
      */
     public WebDriver getWebdriver(BrowserType type) {
-        boolean parallel = EnvironmentProperties.getInstance().isParallel();
-        if (parallel) {
-            WebDriver driver = multiThreadMap.get();
-            if (driver == null) {
-                driver = createWebdriver(type);
-                multiThreadMap.set(driver);
-            }
-            return driver;
-        } else {
-            WebDriver driver = singleThreadMap.get(type);
-            if (driver == null) {
-                driver = createWebdriver(type);
-                singleThreadMap.put(type, driver);
-            }
-            return driver;
+        WebDriver driver = singleThreadMap.get(type);
+        if (driver == null) {
+            driver = createWebdriver(type);
+            singleThreadMap.put(type, driver);
         }
+        return driver;
+
     }
 
     private WebDriver createWebdriver(BrowserType type) {

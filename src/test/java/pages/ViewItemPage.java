@@ -176,8 +176,12 @@ public class ViewItemPage extends EbayPage {
 
     public boolean acceptCookiesIfPrompted() {
         if (elementExists(BUTTON_ACCEPT_COOKIES)) {
-            click(BUTTON_ACCEPT_COOKIES);
-            LOGGER.info("Clicked on Accept Cookies");
+            boolean success = clickIfExists(BUTTON_ACCEPT_COOKIES);
+            if (success) {
+                LOGGER.info("Clicked on Accept Cookies");
+            } else {
+                LOGGER.warn("Could not click on 'Accept Cookies' even though element exists");
+            }
             return true;
         } else {
             return false;

@@ -120,6 +120,18 @@ public abstract class PageObject {
         element.click();
     }
 
+    protected boolean clickIfExists(By selector) {
+        try {
+            WebElement element = wait.until(ExpectedConditions.elementToBeClickable(
+                    driver.findElement(selector)));
+            element.click();
+            return true;
+        } catch (TimeoutException ex) {
+            LOGGER.warn("Could not click on element " + selector.toString());
+            return false;
+        }
+    }
+
     protected boolean elementExists(WebElement element, By cssSelector) {
         try {
             element.findElement(cssSelector);

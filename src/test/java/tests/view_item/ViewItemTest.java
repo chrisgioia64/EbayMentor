@@ -66,8 +66,10 @@ public class ViewItemTest extends BaseTest implements ITest {
             viPage.acceptCookiesIfPrompted();
             hasAcceptedCookies = true;
         }
+        LOGGER.info("Performing test on method " + result.getMethod().getMethodName());
+
         // Give the page time to load
-        CustomUtilities.sleep(2000);
+//        CustomUtilities.sleep(2000);
     }
 
     @AfterMethod(alwaysRun = true)
@@ -313,8 +315,8 @@ public class ViewItemTest extends BaseTest implements ITest {
             assertTrue("Next button should be present", nextButton.isPresent());
             int count = 0;;
             // Not sure why but chrome sometimes has the prev button enabled
-//            assertTrue("Prev button should be disabled",
-//                    ViewItemTestHelper.isNavigationButtonDisabled(prevButton.get()));
+            assertTrue("Prev button should be disabled",
+                    ViewItemTestHelper.isNavigationButtonDisabled(prevButton.get()));
             ViewItemTestHelper.assertNthThumbnail(elements, count);
             while (count < elements.size() - 1) {
                 CustomUtilities.sleep(1000);
