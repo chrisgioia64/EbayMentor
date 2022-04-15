@@ -1,5 +1,6 @@
 products:
-  - itemId: 303835193497
+  - id: 1
+    itemId: 303835193497
     note: "JLPT Set with a single image, and 3 available"
     productTitle:
       english: "JLPT Official 5 books Set , N1 N2 N3 N4 N5 Japanese Language Proficiency Test..."
@@ -13,7 +14,8 @@ products:
     sellerName: "supla-us"
     price: 87.95
     included: true
-  - itemId: 192238685975
+  - id: 2
+    itemId: 192238685975
     note: "JLPT N4 with multiple images, and 1 available and product ratings"
     productTitle:
       english: "JLPT N4 Grammar Shin Kanzen Master Japanese Language Proficiency Test Japan"
@@ -27,7 +29,8 @@ products:
     sellerName: "reckless_yokohama"
     price: 34.99
     included: true
-  - itemId: 185297921843
+  - id: 3
+    itemId: 185297921843
     note: "JLPT N4 with no quantity box and no num watchers"
     productTitle:
       english: "JLPT N4 JAPANESE LAUGUAGE PROFICIENCY TEST OFFICIAL BOOK By Japan Foundation NEW"
@@ -41,7 +44,8 @@ products:
     sellerName: "zuber"
     price: 28.95
     included: true
-  - itemId: 275048135425
+  - id: 4
+    itemId: 275048135425
     note: "Java HF with no quantity box and 2 images"
     productTitle:
       english: "Head First Java, Second Edition Paperback"
@@ -55,7 +59,8 @@ products:
     sellerName: "noetics-64"
     price: 29.99
     included: false
-  - itemId: 274372656125
+  - id: 5
+    itemId: 274372656125
     note: "Java HF -- item out of stock"
     productTitle:
       english: "Head First Java, 2nd Edition - Paperback By Sierra, Kathy - GOOD"

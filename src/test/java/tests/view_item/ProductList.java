@@ -28,6 +28,10 @@ public class ProductList {
     }
 
     public static class Product {
+        /** The product number (or id) used to optionally filter a
+         * selected subset of products to include
+         */
+        private int id;
         /** The product item id used in the url. */
         private String itemId;
         /** A note to the developer that helps identify the product. */
@@ -44,6 +48,14 @@ public class ProductList {
         private double price;
         /** Should this product be included in the test run. */
         private boolean included;
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
 
         public String getItemId() {
             return itemId;

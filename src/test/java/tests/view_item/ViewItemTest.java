@@ -23,10 +23,8 @@ import pages.WatchlistPage;
 import tests.TestGroups;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.testng.AssertJUnit.*;
 import static org.testng.AssertJUnit.assertTrue;
@@ -722,8 +720,19 @@ public class ViewItemTest extends BaseTest implements ITest {
             e.printStackTrace();
         }
         ProductList productList = yaml.load(inputStream);
-        List<ProductList.Product> includedProducts = productList.getIncludedProducts();
+        List<ProductList.Product> products = productList.getIncludedProducts();
 
+        List<ProductList.Product> includedProducts = new LinkedList<>();
+        Optional<Set<Integer>> productNumbers = EnvironmentProperties.getInstance().getProductNumber();
+        if (productNumbers.isEmpty()) {
+            includedProducts.addAll(products);
+        } else {
+            for (ProductList.Product product : products) {
+                if (productNumbers.get().contains(product.getId())) {
+                    includedProducts.add(product);
+                }
+            }
+        }
         Object[][] result = new Object[includedProducts.size()][1];
         for (int i = 0; i < includedProducts.size(); i++) {
             result[i][0] = includedProducts.get(i);

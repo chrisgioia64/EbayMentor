@@ -6,7 +6,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Properties;
+import java.util.*;
 
 public class EnvironmentProperties {
 
@@ -23,6 +23,7 @@ public class EnvironmentProperties {
     private static final String KEY_USE_EXISTING_BROWSER = "use_existing_browser";
     private static final String KEY_BROWSER_PORT = "port";
     private static final String KEY_PARALLEL = "parallel";
+    private static final String KEY_PRODUCT_NUMBERS = "product_numbers";
 
     private LocaleProperties localeProperties;
 
@@ -103,6 +104,27 @@ public class EnvironmentProperties {
             localeProperties = new LocaleProperties(getLocaleFilePath());
         }
         return localeProperties;
+    }
+
+    public Optional<Set<Integer>> getProductNumber() {
+        String numbers = getConfigurationValue(KEY_PRODUCT_NUMBERS, "");
+        Set<Integer> productNumbers = new HashSet<>();
+        if (numbers == null || numbers.equals("")) {
+            LOGGER.info("Using all product numbers");
+            return Optional.empty();
+        }
+        String[] numsAry = numbers.split(",");
+        for (String num : numsAry) {
+            try {
+                Integer n = Integer.parseInt(num);
+                productNumbers.add(n);
+            } catch (NumberFormatException ex) {
+                LOGGER.warn("Could not parse product number: {}. Using all product numbers", num);
+                return Optional.empty();
+            }
+        }
+        LOGGER.info("Using the following product numbers: {}", productNumbers);
+        return Optional.of(productNumbers);
     }
 
     /**
