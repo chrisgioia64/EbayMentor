@@ -1,15 +1,34 @@
 pipeline {
   agent any
   stages {
-  stage('Stage 1') {
+  stage('Smoke') {
       steps {
-          echo 'Stage 1 processing...'
+          mvn test -P smoke -D locale=us -D browser=firefox -D product_numbers=1
       }
     }
-  stage('Stage 2') {
-      steps {
-          echo 'Stage 2 processing...'
-      }
+  stage('Product 1 -- Single Images') {
+    parallel {
+        stage('US Locale') {
+            steps {
+                mvn test -P jenkins -D locale=us -D browser=firefox product_numbers=1
+            }
+        }
+        stage('UK Locale') {
+            steps {
+                mvn test -P jenkins -D locale=uk -D browser=firefox product_numbers=1
+            }
+        }
+        stage('IT Locale') {
+            steps {
+                mvn test -P jenkins -D locale=it -D browser=firefox product_numbers=1
+            }
+        }
+        stage('ES Locale') {
+            steps {
+                mvn test -P jenkins -D locale=es -D browser=firefox product_numbers=1
+            }
+        }
     }
   }
+
 }
