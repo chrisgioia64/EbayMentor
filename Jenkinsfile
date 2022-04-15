@@ -8,7 +8,16 @@ pipeline {
       post {
           always {
             step([$class: 'Publisher', reportFilenamePattern: '**/target/smoke/testng-results.xml'])
+            publishHTML (target: [
+                  allowMissing: false,
+                  alwaysLinkToLastBuild: false,
+                  keepAll: true,
+                  reportDir: 'target/smoke',
+                  reportFiles: 'emailable-report.html',
+                  reportName: "Smoke Test"
+                ])
           }
+
       }
     }
   stage('Product 1 -- Single Images') {
@@ -19,7 +28,7 @@ pipeline {
             }
             post {
                 always {
-                step([$class: 'Publisher', reportFilenamePattern: '**/testng-results.xml'])
+                step([$class: 'Publisher', reportFilenamePattern: '**/target/smoke/testng-results.xml'])
                 }
             }
         }
