@@ -7,7 +7,7 @@ pipeline {
       }
       post {
           always {
-            step([$class: 'Publisher', reportFilenamePattern: 'target/smoke/testng-results.xml'])
+            step([$class: 'Publisher', reportFilenamePattern: '**/target/smoke/testng-results.xml'])
           }
       }
     }
@@ -19,7 +19,7 @@ pipeline {
             }
             post {
                 always {
-                step([$class: 'Publisher', reportFilenamePattern: 'target/locale/us/1/testng-results.xml'])
+                step([$class: 'Publisher', reportFilenamePattern: '**/target/locale/us/1/testng-results.xml'])
                 }
             }
         }
@@ -30,7 +30,7 @@ pipeline {
             }
             post {
                 always {
-                step([$class: 'Publisher', reportFilenamePattern: 'target/locale/uk/1/testng-results.xml'])
+                step([$class: 'Publisher', reportFilenamePattern: '**/target/locale/uk/1/testng-results.xml'])
                 }
             }
         }
@@ -40,7 +40,7 @@ pipeline {
             }
             post {
                 always {
-                step([$class: 'Publisher', reportFilenamePattern: 'target/locale/it/1/testng-results.xml'])
+                step([$class: 'Publisher', reportFilenamePattern: '**/target/locale/it/1/testng-results.xml'])
                 }
             }
         }
@@ -50,7 +50,7 @@ pipeline {
             }
             post {
                 always {
-                step([$class: 'Publisher', reportFilenamePattern: 'target/locale/es/1/testng-results.xml'])
+                step([$class: 'Publisher', reportFilenamePattern: '**/target/locale/es/1/testng-results.xml'])
                 }
             }
         }
