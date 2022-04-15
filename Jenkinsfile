@@ -19,7 +19,7 @@ pipeline {
             }
             post {
                 always {
-                step([$class: 'Publisher', reportFilenamePattern: '**/target/locale/us/1/testng-results.xml'])
+                step([$class: 'Publisher', reportFilenamePattern: '**/testng-results.xml'])
                 }
             }
         }
