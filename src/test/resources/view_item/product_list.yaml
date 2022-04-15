@@ -42,7 +42,7 @@ products:
       it: "Nuovo"
       es: "Nuevo"
     sellerName: "zuber"
-    price: 28.95
+    price: 24.75
     included: true
   - id: 4
     itemId: 275048135425
