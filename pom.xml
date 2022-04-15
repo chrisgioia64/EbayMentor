@@ -30,26 +30,28 @@
 
 
     <profiles>
-    <profile>
-        <id>smoke</id>
-        <build>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.12.4</version>
-                    <configuration>
-                        <systemPropertyVariables>
-                            <env_file>dev.properties</env_file>
-                        </systemPropertyVariables>
-                        <suiteXmlFiles>
-                            <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
-                        </suiteXmlFiles>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </build>
-    </profile>
+
+        <profile>
+            <id>smoke</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.12.4</version>
+                        <configuration>
+                            <reportsDirectory>${basedir}/target/smoke</reportsDirectory>
+                            <systemPropertyVariables>
+                                <env_file>jenkins.properties</env_file>
+                            </systemPropertyVariables>
+                            <suiteXmlFiles>
+                                <suiteXmlFile>src/test/resources/smoke.xml</suiteXmlFile>
+                            </suiteXmlFiles>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
 
         <profile>
             <id>development</id>
@@ -82,7 +84,7 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <version>2.12.4</version>
                         <configuration>
-<!--                            <reportsDirectory>${basedir}/target/locale/${locale}</reportsDirectory>-->
+                            <reportsDirectory>${basedir}/target/locale/${locale}</reportsDirectory>
                             <systemPropertyVariables>
                                 <env_file>jenkins.properties</env_file>
                             </systemPropertyVariables>
