@@ -7,7 +7,7 @@ pipeline {
       }
       post {
           always {
-            step([$class: 'Publisher', reportFilenamePattern: '**/target/smoke/testng-results.xml'])
+//             step([$class: 'Publisher', reportFilenamePattern: '**/target/smoke/testng-results.xml'])
             publishHTML (target: [
                   allowMissing: false,
                   alwaysLinkToLastBuild: false,
@@ -24,46 +24,84 @@ pipeline {
     parallel {
         stage('US Locale') {
             steps {
-                bat "mvn test -P jenkins -D locale=us -D browser=firefox -D product_numbers=1"
+                bat "mvn test -P jenkins -D locale=us -D browser=firefox"
             }
             post {
                 always {
-                step([$class: 'Publisher', reportFilenamePattern: '**/target/smoke/testng-results.xml'])
+//                 step([$class: 'Publisher', reportFilenamePattern: '**/target/smoke/testng-results.xml'])
+            publishHTML (target: [
+                  allowMissing: false,
+                  alwaysLinkToLastBuild: false,
+                  keepAll: true,
+                  reportDir: 'target/locale/us',
+                  reportFiles: 'emailable-report.html',
+                  reportName: "US Locale"
+                ])
+
                 }
             }
         }
 
         stage('UK Locale') {
             steps {
-                bat "mvn test -P jenkins -D locale=uk -D browser=firefox -D product_numbers=1"
+                bat "mvn test -P jenkins -D locale=uk -D browser=firefox"
             }
             post {
                 always {
-                step([$class: 'Publisher', reportFilenamePattern: '**/target/locale/uk/1/testng-results.xml'])
+//                 step([$class: 'Publisher', reportFilenamePattern: '**/target/locale/uk/1/testng-results.xml'])
+            publishHTML (target: [
+                  allowMissing: false,
+                  alwaysLinkToLastBuild: false,
+                  keepAll: true,
+                  reportDir: 'target/locale/uk',
+                  reportFiles: 'emailable-report.html',
+                  reportName: "UK Locale"
+                ])
                 }
             }
         }
         stage('IT Locale') {
             steps {
-                bat "mvn test -P jenkins -D locale=it -D browser=firefox -D product_numbers=1"
+                bat "mvn test -P jenkins -D locale=it -D browser=firefox"
             }
             post {
                 always {
-                step([$class: 'Publisher', reportFilenamePattern: '**/target/locale/it/1/testng-results.xml'])
+//                 step([$class: 'Publisher', reportFilenamePattern: '**/target/locale/it/1/testng-results.xml'])
+            publishHTML (target: [
+                  allowMissing: false,
+                  alwaysLinkToLastBuild: false,
+                  keepAll: true,
+                  reportDir: 'target/locale/it',
+                  reportFiles: 'emailable-report.html',
+                  reportName: "IT Locale"
+                ])
                 }
             }
         }
         stage('ES Locale') {
             steps {
-                bat "mvn test -P jenkins -D locale=es -D browser=firefox -D product_numbers=1"
+                bat "mvn test -P jenkins -D locale=es -D browser=firefox"
             }
             post {
                 always {
-                step([$class: 'Publisher', reportFilenamePattern: '**/target/locale/es/1/testng-results.xml'])
+//                 step([$class: 'Publisher', reportFilenamePattern: '**/target/locale/es/1/testng-results.xml'])
+            publishHTML (target: [
+                  allowMissing: false,
+                  alwaysLinkToLastBuild: false,
+                  keepAll: true,
+                  reportDir: 'target/locale/es',
+                  reportFiles: 'emailable-report.html',
+                  reportName: "ES Locale"
+                ])
                 }
             }
         }
     }
+            post {
+                  always {
+                  step([$class: 'Publisher', reportFilenamePattern: '**/target/locale/**/testng-results.xml'])
+                  }
+              }
   }
 }
 }
