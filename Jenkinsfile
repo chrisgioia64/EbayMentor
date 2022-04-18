@@ -3,7 +3,7 @@ pipeline {
   stages {
   stage('Smoke') {
       steps {
-          bat "mvn test -P smoke -D locale=us -D browser=firefox -D product_numbers=1"
+          sh "mvn test -P smoke -D locale=us -D browser=firefox -D product_numbers=1"
       }
       post {
           always {
@@ -24,7 +24,7 @@ pipeline {
     parallel {
         stage('US Locale') {
             steps {
-                bat "mvn test -P jenkins -D locale=us -D browser=firefox"
+                sh "mvn test -P jenkins -D locale=us -D browser=firefox"
             }
             post {
                 always {
@@ -44,7 +44,7 @@ pipeline {
 
         stage('UK Locale') {
             steps {
-                bat "mvn test -P jenkins -D locale=uk -D browser=firefox"
+                sh "mvn test -P jenkins -D locale=uk -D browser=firefox"
             }
             post {
                 always {
@@ -62,7 +62,7 @@ pipeline {
         }
         stage('IT Locale') {
             steps {
-                bat "mvn test -P jenkins -D locale=it -D browser=firefox"
+                sh "mvn test -P jenkins -D locale=it -D browser=firefox"
             }
             post {
                 always {
@@ -80,7 +80,7 @@ pipeline {
         }
         stage('ES Locale') {
             steps {
-                bat "mvn test -P jenkins -D locale=es -D browser=firefox"
+                sh "mvn test -P jenkins -D locale=es -D browser=firefox"
             }
             post {
                 always {
