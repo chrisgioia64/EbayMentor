@@ -73,14 +73,15 @@ public class DriverFactory {
     }
 
     private AbstractDriverOptions createOptions(BrowserType type) {
-        return switch (type) {
-            case CHROME -> new ChromeOptions();
-            case FIREFOX -> new FirefoxOptions();
-            case EDGE -> new EdgeOptions();
-            default -> {
-                throw new IllegalArgumentException("browser type specified is unrecognized: " + type);
-            }
-        };
+        if (type.equals(BrowserType.CHROME)) {
+            return new ChromeOptions();
+        } else if (type.equals(BrowserType.FIREFOX)) {
+            return new FirefoxOptions();
+        } else if (type.equals(BrowserType.EDGE)) {
+            return new EdgeOptions();
+        } else {
+            throw new IllegalArgumentException("browser type specified is unrecognized: " + type);
+        }
     }
 
     private AbstractDriverOptions createCapabilities(BrowserType type) {
@@ -110,14 +111,15 @@ public class DriverFactory {
     }
 
     private WebDriver createLocalWebdriver(BrowserType type) {
-        return switch (type) {
-            case FIREFOX -> new FirefoxDriver();
-            case CHROME -> new ChromeDriver();
-            case EDGE -> new EdgeDriver();
-            default -> {
-                throw new IllegalArgumentException("browser type specified is unrecognized: " + type);
-            }
-        };
+        if (type.equals(BrowserType.CHROME)) {
+            return new ChromeDriver();
+        } else if (type.equals(BrowserType.FIREFOX)) {
+            return new FirefoxDriver();
+        } else if (type.equals(BrowserType.EDGE)) {
+            return new EdgeDriver();
+        } else {
+            throw new IllegalArgumentException("browser type specified is unrecognized: " + type);
+        }
     }
 
     private WebDriver createRemoteWebdriver(BrowserType type) throws MalformedURLException {
