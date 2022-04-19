@@ -3,9 +3,11 @@ package base;
 import base.locale.LocaleProperties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.WebDriver;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.*;
 
 public class EnvironmentProperties {
@@ -25,7 +27,14 @@ public class EnvironmentProperties {
     private static final String KEY_PARALLEL = "parallel";
     private static final String KEY_PRODUCT_NUMBERS = "product_numbers";
 
+    private static final String KEY_USE_REMOTE = "use_remote";
+    public static final String SAUCE_USERNAME = "sauce_username";
+    public static final String SAUCE_ACCESS_KEY = "sauce_accessKey";
+
+
     private LocaleProperties localeProperties;
+
+    private boolean useRemote;
 
     public static EnvironmentProperties getInstance() {
         return INSTANCE;
@@ -33,6 +42,7 @@ public class EnvironmentProperties {
 
     private EnvironmentProperties() {
         initializeProperties();
+        this.useRemote = isUseRemote();
     }
 
     private void initializeProperties() {
@@ -45,6 +55,7 @@ public class EnvironmentProperties {
             e.printStackTrace();
         }
     }
+
 
     private final static String ENVIRONMENT_FILE_SYSTEM_PROPERTY = "env_file";
 
@@ -69,17 +80,6 @@ public class EnvironmentProperties {
 
     public static final String DEFAULT_URL = "https://www.ebay.com/";
 
-//    public String getUrl() {
-//        String urlValue = getProperty(KEY_URL);
-//        if (urlValue == null) {
-//            LOGGER.warn("No url value specified in environment value. Using default US website" +
-//                    " " + DEFAULT_URL);
-//            return DEFAULT_URL;
-//        } else {
-//            LOGGER.info("Using the following url: " + urlValue);
-//            return urlValue;
-//        }
-//    }
 
     public BrowserType getBrowser() {
         String browserName = getConfigurationValue(KEY_BROWSER, BrowserType.CHROME.getName());
@@ -176,6 +176,9 @@ public class EnvironmentProperties {
         }
     }
 
+    public boolean isUseRemote() {
+        return getBooleanFlag(KEY_USE_REMOTE);
+    }
 
     public boolean isUseExistingBrowser() {
         return getBooleanFlag(KEY_USE_EXISTING_BROWSER);
