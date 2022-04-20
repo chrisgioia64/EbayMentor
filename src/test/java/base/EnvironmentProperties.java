@@ -177,7 +177,15 @@ public class EnvironmentProperties {
     }
 
     public boolean isUseRemote() {
-        return getBooleanFlag(KEY_USE_REMOTE);
+        String value = getConfigurationValue(KEY_USE_REMOTE, "false");
+        if (value.equals("true")) {
+            return true;
+        } else if (value.equals("false")) {
+            return false;
+        } else {
+            LOGGER.warn("Unrecognized boolean value for use_remote: " + value + " Using false.");
+            return false;
+        }
     }
 
     public boolean isUseExistingBrowser() {
