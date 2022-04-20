@@ -22,25 +22,25 @@ pipeline {
     }
   stage('Product 1 -- Single Images') {
     parallel {
-        stage('US Locale') {
-            steps {
-                sh "mvn test -P jenkins -D locale=us -D browser=firefox"
-            }
-            post {
-                always {
-//                 step([$class: 'Publisher', reportFilenamePattern: '**/target/smoke/testng-results.xml'])
-            publishHTML (target: [
-                  allowMissing: false,
-                  alwaysLinkToLastBuild: false,
-                  keepAll: true,
-                  reportDir: 'target/locale/us',
-                  reportFiles: 'emailable-report.html',
-                  reportName: "US Locale"
-                ])
-
-                }
-            }
-        }
+//         stage('US Locale') {
+//             steps {
+//                 sh "mvn test -P jenkins -D locale=us -D browser=firefox"
+//             }
+//             post {
+//                 always {
+// //                 step([$class: 'Publisher', reportFilenamePattern: '**/target/smoke/testng-results.xml'])
+//             publishHTML (target: [
+//                   allowMissing: false,
+//                   alwaysLinkToLastBuild: false,
+//                   keepAll: true,
+//                   reportDir: 'target/locale/us',
+//                   reportFiles: 'emailable-report.html',
+//                   reportName: "US Locale"
+//                 ])
+//
+//                 }
+//             }
+//         }
 
         stage('UK Locale') {
             steps {
@@ -60,42 +60,42 @@ pipeline {
                 }
             }
         }
-        stage('IT Locale') {
-            steps {
-                sh "mvn test -P jenkins -D locale=it -D browser=firefox"
-            }
-            post {
-                always {
-//                 step([$class: 'Publisher', reportFilenamePattern: '**/target/locale/it/1/testng-results.xml'])
-            publishHTML (target: [
-                  allowMissing: false,
-                  alwaysLinkToLastBuild: false,
-                  keepAll: true,
-                  reportDir: 'target/locale/it',
-                  reportFiles: 'emailable-report.html',
-                  reportName: "IT Locale"
-                ])
-                }
-            }
-        }
-        stage('ES Locale') {
-            steps {
-                sh "mvn test -P jenkins -D locale=es -D browser=firefox"
-            }
-            post {
-                always {
-//                 step([$class: 'Publisher', reportFilenamePattern: '**/target/locale/es/1/testng-results.xml'])
-            publishHTML (target: [
-                  allowMissing: false,
-                  alwaysLinkToLastBuild: false,
-                  keepAll: true,
-                  reportDir: 'target/locale/es',
-                  reportFiles: 'emailable-report.html',
-                  reportName: "ES Locale"
-                ])
-                }
-            }
-        }
+//         stage('IT Locale') {
+//             steps {
+//                 sh "mvn test -P jenkins -D locale=it -D browser=firefox"
+//             }
+//             post {
+//                 always {
+// //                 step([$class: 'Publisher', reportFilenamePattern: '**/target/locale/it/1/testng-results.xml'])
+//             publishHTML (target: [
+//                   allowMissing: false,
+//                   alwaysLinkToLastBuild: false,
+//                   keepAll: true,
+//                   reportDir: 'target/locale/it',
+//                   reportFiles: 'emailable-report.html',
+//                   reportName: "IT Locale"
+//                 ])
+//                 }
+//             }
+//         }
+//         stage('ES Locale') {
+//             steps {
+//                 sh "mvn test -P jenkins -D locale=es -D browser=firefox"
+//             }
+//             post {
+//                 always {
+// //                 step([$class: 'Publisher', reportFilenamePattern: '**/target/locale/es/1/testng-results.xml'])
+//             publishHTML (target: [
+//                   allowMissing: false,
+//                   alwaysLinkToLastBuild: false,
+//                   keepAll: true,
+//                   reportDir: 'target/locale/es',
+//                   reportFiles: 'emailable-report.html',
+//                   reportName: "ES Locale"
+//                 ])
+//                 }
+//             }
+//         }
     }
             post {
                   always {
