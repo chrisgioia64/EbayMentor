@@ -3,7 +3,7 @@ pipeline {
   stages {
   stage('Smoke') {
       steps {
-          sh "mvn test -P smoke -D locale=us -D browser=firefox -D product_numbers=1"
+          bat "mvn test -P smoke -D locale=us -D browser=firefox -D product_numbers=1"
       }
       post {
           always {
@@ -44,7 +44,7 @@ pipeline {
 
         stage('UK Locale') {
             steps {
-                sh "mvn test -P jenkins -D locale=uk -D browser=firefox"
+                bat "mvn test -P jenkins -D locale=uk -D browser=firefox"
             }
             post {
                 always {
